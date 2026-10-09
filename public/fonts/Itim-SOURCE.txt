@@ -1,0 +1,7 @@
+Itim Regular — Cadson Demak
+Source: https://github.com/google/fonts/tree/main/ofl/itim
+License: SIL Open Font License 1.1, included as Itim-LICENSE.txt.
+
+User-approved free substitute for the Tierra by Florflai reference in font_final_2.png.
+Tierra source: https://creativemarket.com/florflai/92482659-Tierra-font
+This file is Itim, not Tierra.
