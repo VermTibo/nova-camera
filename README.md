@@ -143,7 +143,7 @@ For renderer diagnostics, append `?debug=true` to the URL, or `&debug=true` if i
 
 ## Validation and project status
 
-The latest completed checks passed the production build and all **24 automated tests**. Coverage includes configuration normalization and pricing, URL round trips, storage, independent accessories, camera reset, repeated preset selection, Shot Lab scoring, camera framing, decal geometry, and studio control limits.
+The latest completed checks passed the production build and all **25 automated tests**. Coverage includes configuration normalization and pricing, URL round trips, storage, independent accessories, camera reset, repeated preset selection, Shot Lab scoring, camera framing, decal geometry, and studio control limits.
 
 Browser access was unavailable during the latest changes. Visual acceptance, mobile and fullscreen interactions, lighting quality, and downloaded posters still need browser verification. Passing automated checks does not confirm those visual results.
 

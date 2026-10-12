@@ -117,6 +117,7 @@
 }
 
 /* A quieter canvas and fewer competing actions. */
+.nova-backdrop { position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); font-size: min(35cqw, 48vh); letter-spacing: .04em; line-height: 1; color: #f3d2c6; opacity: .035; pointer-events: none; user-select: none; white-space: nowrap; z-index: 0; }
 .main-header { height: 72px; border-bottom: 0; }
 .stage:after { display: none; }
 .stage { background: radial-gradient(ellipse at 50% 45%, #1b2639, #0b0d12 75%); }

@@ -1,5 +1,5 @@
 import { motionDamp } from "./motion";
-import { nearestOrbitAngle } from "./orbitMotion";
+import { nearestOrbitAngle, viewPositions as positions } from "./orbitMotion";
 import { fitBoxDistance, viewerFrame } from "./framing";
 import {
   Component,
@@ -25,17 +25,9 @@ import { CameraBody } from "./CameraBody";
 import { Lens } from "./Lens";
 import { Diagnostics } from "./Diagnostics";
 import { Accessories } from "./Accessories";
-import { useCamera, type View } from "../state/cameraStore";
+import { useCamera } from "../state/cameraStore";
 import { lightingLooks, useStudio } from "../state/studioStore";
 import { lenses } from "../data/catalog";
-const positions: Record<View, [number, number, number]> = {
-  Hero: [5.4, 3.0, 7.6],
-  Front: [0, 0.35, 8.6],
-  Back: [0, 1, -8],
-  Top: [0.01, 8.8, 0.01],
-  Side: [8.8, 0.8, 0.1],
-  Detail: [2.1, 1.4, 4.1],
-};
 function Rig({ product }: { product: RefObject<THREE.Group | null> }) {
   const rotating = useStudio(s => s.rotating);
   const speed = useStudio(s => s.speed);

@@ -51,6 +51,13 @@ Implemented in code; visual acceptance remains pending.
 - [x] Reduce visible controls: move presentation modes into More, and place surface finish, lens options, and saved configurations in expandable sections.
 - [ ] Verify the simplified layout, icon controls, repeated view changes, and reset behavior visually on desktop and mobile. Chrome inspection was blocked by missing computer-use permissions.
 
+## Top view and background refinement — 12 October 2026
+
+- [x] Correct the top preset's 45-degree heading: keep the camera body horizontal and the lens pointing down in a nearly vertical overhead view.
+- [x] Add a subtle, non-interactive NOVA background wordmark behind the camera.
+- [x] Add a regression check for top-view orientation from every preset.
+- [ ] Confirm the result visually in a browser when access is available.
+
 ## Priority 1 — Visual and interaction verification
 
 Browser verification has been blocked by unavailable browser access. Complete these checks before considering the visual work finished.
@@ -87,7 +94,7 @@ These are proposals, not implemented features or committed scope.
 
 ## Validation
 
-Most recent completed checks (12 October 2026): production build passed; all 24 automated tests passed, including independent handle/cage pricing and persistence shortest-orbit transitions, camera reset, and repeated preset selection. Browser visual verification remains blocked: no browser connector is available, and native Chrome inspection requires unavailable computer-use permissions. These checks do not replace browser or export verification.
+Most recent completed checks (12 October 2026): production build passed; all 25 automated tests passed, including independent handle/cage pricing and persistence shortest-orbit transitions, camera reset, and repeated preset selection. Browser visual verification remains blocked: no browser connector is available, and native Chrome inspection requires unavailable computer-use permissions. These checks do not replace browser or export verification.
 
 ```bash
 npm run dev

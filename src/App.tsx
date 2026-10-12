@@ -71,6 +71,7 @@ export default function App() {
               SONY <span>{bodyNames[config.body]}.</span>
             </h1>
           </div>
+          <div className="nova-backdrop" aria-hidden="true">NOVA</div>
           <div className="canvas-wrap">
             <Suspense
               fallback={
