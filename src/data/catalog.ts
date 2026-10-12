@@ -78,12 +78,12 @@ export const accessoryCatalog = {
   },
   topHandle: {
     name: "Top handle",
-    detail: "Includes cage · low-angle control",
+    detail: "Independent mount · low-angle control",
     price: 160,
   },
   sideHandle: {
     name: "Side handle",
-    detail: "Includes cage · walnut grip",
+    detail: "Independent mount · walnut grip",
     price: 140,
   },
   flash: {

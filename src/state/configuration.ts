@@ -72,8 +72,6 @@ export function normalize(value: unknown): Configuration {
     for (const key of Object.keys(c.accessories) as Accessory[])
       c.accessories[key] =
         (v.accessories as Record<string, unknown>)[key] === true;
-  if (c.accessories.topHandle || c.accessories.sideHandle)
-    c.accessories.cage = true;
   return c;
 }
 export function fromSearch(search: string): Configuration | null {

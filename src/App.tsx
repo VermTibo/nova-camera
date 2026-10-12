@@ -1,7 +1,8 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import {
   ArrowUpRight,
-  Aperture,
+  Gamepad2,
+  Play,
   Box,
   Check,
   Expand,
@@ -92,7 +93,7 @@ export default function App() {
           <span className="header-divider">/</span> BUILT AROUND YOU
         </div>
         <div className="header-actions">
-        <button className="shot-lab-button" aria-label="Open Shot Lab" onClick={() => setShotLab(true)}><Aperture size={18} /><span>SHOT LAB</span><span className="play-tag">PLAY</span></button>
+        <button className="shot-lab-button" aria-label="Play Shot Lab photography game" onClick={() => setShotLab(true)}><Gamepad2 size={21} /><span className="game-button-copy"><strong>PLAY GAME</strong><small>SHOT LAB · PHOTO CHALLENGE</small></span><Play size={15} fill="currentColor" /></button>
         <button className="share-button" aria-label="Share configuration" onClick={doShare}>
           {copied ? <Check size={15} /> : <Share2 size={15} />}
           <span>{copied ? "LINK COPIED" : "SHARE CONFIGURATION"}</span>

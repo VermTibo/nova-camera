@@ -1,4 +1,5 @@
 import { motionDamp } from "./motion";
+import { nearestOrbitAngle } from "./orbitMotion";
 import { fitBoxDistance, viewerFrame } from "./framing";
 import {
   Component,
@@ -50,7 +51,8 @@ function Rig({ product }: { product: RefObject<THREE.Group | null> }) {
   const center = useRef(new THREE.Vector3());
   const extent = useRef(new THREE.Vector3());
   const direction = useRef(new THREE.Vector3(...positions.Hero).normalize());
-  const destination = useRef(new THREE.Vector3());
+  const currentOrbit = useRef(new THREE.Spherical());
+  const targetOrbit = useRef(new THREE.Spherical());
   const safeDistance = useRef(9);
   const offset = useRef(new THREE.Vector3());
 
@@ -91,12 +93,20 @@ function Rig({ product }: { product: RefObject<THREE.Group | null> }) {
     safeDistance.current = fitBoxDistance(extent.current.toArray(), offset.current.toArray(), camera.fov, aspect, 1.1, frame);
     orbit.minDistance = safeDistance.current;
     orbit.maxDistance = Math.max(24, safeDistance.current * 2.5);
+    orbit.enableDamping = !moving.current;
     if (moving.current) {
       const fitted = fitBoxDistance(extent.current.toArray(), direction.current.toArray(), camera.fov, aspect, 1.1, frame);
-      destination.current.copy(direction.current).multiplyScalar(Math.max(orbit.minDistance, fitted * (view === "Detail" ? 1 : 1.04))).add(orbit.target);
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      camera.position.lerp(destination.current, reduced ? 1 : 1 - Math.exp(-dt * 5));
-      if (camera.position.distanceTo(destination.current) < .01 && settling.current <= 0) moving.current = false;
+      const current = currentOrbit.current.setFromVector3(offset.current.copy(camera.position).sub(orbit.target));
+      const target = targetOrbit.current.setFromVector3(direction.current);
+      target.theta = nearestOrbitAngle(current.theta, target.theta);
+      target.radius = Math.max(orbit.minDistance, fitted * (view === "Detail" ? 1 : 1.04));
+      // Travel around the subject, never through it, including a full front/back flip.
+      current.theta = motionDamp(current.theta, target.theta, 5, Math.min(dt, .05));
+      current.phi = motionDamp(current.phi, target.phi, 5, Math.min(dt, .05));
+      current.radius = motionDamp(current.radius, target.radius, 5, Math.min(dt, .05));
+      current.makeSafe();
+      camera.position.setFromSpherical(current).add(orbit.target);
+      if (Math.abs(current.theta - target.theta) < .001 && Math.abs(current.phi - target.phi) < .001 && Math.abs(current.radius - target.radius) < .01 && settling.current <= 0) moving.current = false;
     }
     orbit.autoRotate = (rotating || mode === "Cinematic") && !moving.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     orbit.update();

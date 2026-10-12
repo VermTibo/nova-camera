@@ -51,12 +51,14 @@ test("friendly URL aliases load a real optical system", () => {
   assert.equal(c.accessories.cage, true);
   assert.equal(c.accessories.flash, false);
 });
-test("both handles imply their physically required cage", () => {
+test("handles remain independent of the cage, price and shared configuration", () => {
   for (const part of ["sideHandle", "topHandle"])
-    assert.equal(
-      normalize({ accessories: { [part]: true } }).accessories.cage,
-      true,
-    );
+  {
+    const c = normalize({ accessories: { [part]: true } });
+    assert.equal(c.accessories.cage, false);
+    assert.equal(price(c), price(defaults) + accessoryCatalog[part as keyof typeof accessoryCatalog].price);
+    assert.deepEqual(fromSearch(new URL(shareUrl(c, "https://camera.example")).search), c);
+  }
 });
 test("each lens changes total by its actual catalog price", () => {
   for (const lens of lenses)
@@ -116,6 +118,8 @@ test("store save, reset and load preserve a complete system in device storage", 
   useCamera.getState().load();
   assert.deepEqual(useCamera.getState().config, saved);
   useCamera.getState().toggle("cage");
-  assert.equal(useCamera.getState().config.accessories.topHandle, false);
+  assert.equal(useCamera.getState().config.accessories.cage, true);
+  useCamera.getState().toggle("cage");
+  assert.equal(useCamera.getState().config.accessories.topHandle, true);
   assert.equal(useCamera.getState().config.accessories.cage, false);
 });

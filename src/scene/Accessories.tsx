@@ -110,6 +110,7 @@ export function Accessories({ explode }: { explode: boolean }) {
         )}
         {a.topHandle && (
           <group name="TopHandle" position={[0, 1.48, 0]}>
+            {!a.cage && <Block size={[0.46, 0.42, 0.48]} radius={0.035} position={[-0.65, -0.19, 0]} />}
             <Block
               size={[0.31, 0.49, 0.33]}
               radius={0.055}
@@ -136,6 +137,7 @@ export function Accessories({ explode }: { explode: boolean }) {
         )}
         {a.sideHandle && (
           <group name="SideHandle" position={attachmentPoints.rightMount}>
+            {!a.cage && <Block size={[0.32, 0.48, 0.42]} radius={0.035} position={[-0.16, 0, 0]} />}
             <Block size={[0.49, 0.15, 0.3]} radius={0.035} />
             <Block
               size={[0.4, 1.24, 0.55]}

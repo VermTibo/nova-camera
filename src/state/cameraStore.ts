@@ -48,10 +48,6 @@ export const useCamera = create<State>((set, get) => ({
         ...s.config.accessories,
         [key]: !s.config.accessories[key],
       };
-      if (key === "cage" && !accessories.cage) {
-        accessories.topHandle = false;
-        accessories.sideHandle = false;
-      }
       return { config: normalize({ ...s.config, accessories }) };
     }),
   select: (section) => set({ section, selected: section }),

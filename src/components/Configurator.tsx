@@ -1,5 +1,5 @@
 import { Modal } from "./Modal";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   ArrowUpRight,
   Check,
@@ -101,10 +101,7 @@ export default function Configurator() {
     load,
   } = useCamera();
   const [confirm, setConfirm] = useState(false),
-    [summary, setSummary] = useState(false),
-    [expanded, setExpanded] = useState(false);
-  const start = useRef(0);
-  const dragged = useRef(false);
+    [summary, setSummary] = useState(false);
   const chosenLens = lenses.find((l) => l.id === c.lens)!;
   const name =
     colors.find((v) => v.hex.toLowerCase() === c.color.toLowerCase())?.name ||
@@ -122,57 +119,45 @@ export default function Configurator() {
     ));
   return (
     <aside
-      className={`configurator ${expanded ? "expanded" : ""}`}
+      className="configurator"
       aria-label="Camera configurator"
     >
-      <button
-        className="sheet-handle"
-        aria-label={
-          expanded
-            ? "Collapse configuration panel"
-            : "Expand configuration panel"
-        }
-        onClick={() => {
-          if (!dragged.current) setExpanded(!expanded);
-        }}
-        onPointerDown={(e) => {
-          dragged.current = false;
-          start.current = e.clientY;
-          e.currentTarget.setPointerCapture(e.pointerId);
-        }}
-        onPointerUp={(e) => {
-          if (Math.abs(e.clientY - start.current) > 25) {
-            dragged.current = true;
-            setExpanded(e.clientY < start.current);
-          }
-        }}
-      >
-        <span />
-      </button>
       <div className="config-title">
         <span className="eyebrow">MAKE IT YOURS</span>
         <span className="step-count">
           0{sections.indexOf(section) + 1} <span>/ 06</span>
         </span>
         <h2>
-          Your vision.
-          <br /> Your system.
+          Customize your camera.
         </h2>
       </div>
-      <nav className="category-tabs" aria-label="Configuration categories">
-        {sections.map((s, i) => (
+      <nav className="category-tabs" role="tablist" aria-label="Configuration categories">
+        {sections.map((s) => (
           <button
             key={s}
             className={section === s ? "active" : ""}
-            aria-pressed={section === s}
+            role="tab"
+            id={`tab-${s}`}
+            aria-selected={section === s}
+            aria-controls="configuration-panel"
+            tabIndex={section === s ? 0 : -1}
             onClick={() => select(s)}
+            onKeyDown={(event) => {
+              const index = sections.indexOf(s);
+              const next = event.key === "ArrowRight" ? (index + 1) % sections.length
+                : event.key === "ArrowLeft" ? (index + sections.length - 1) % sections.length
+                  : event.key === "Home" ? 0 : event.key === "End" ? sections.length - 1 : -1;
+              if (next < 0) return;
+              event.preventDefault();
+              select(sections[next]);
+              document.getElementById(`tab-${sections[next]}`)?.focus();
+            }}
           >
-            <span>0{i + 1}</span>
             {s}
           </button>
         ))}
       </nav>
-      <div className="config-scroll" key={section}>
+      <div className="config-scroll" id="configuration-panel" role="tabpanel" aria-labelledby={`tab-${section}`} tabIndex={0} key={section}>
         <div className="section-heading">
           <h3>
             {section === "Body"
@@ -388,7 +373,7 @@ export default function Configurator() {
               "rails",
             ])}
             <p className="field-note">
-              Handles include the precision cage. Flash and microphone use
+              Handles and cage are selected separately. Flash and microphone use
               separate mounts when combined.
             </p>
           </>
