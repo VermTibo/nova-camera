@@ -5,6 +5,7 @@ import {
   Component,
   Suspense,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type ReactNode,
@@ -15,11 +16,10 @@ import {
   ContactShadows,
   Environment,
   Lightformer,
-  OrbitControls,
   Grid,
   Edges,
 } from "@react-three/drei";
-import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
+import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 import { CameraBody } from "./CameraBody";
 import { Lens } from "./Lens";
@@ -39,8 +39,8 @@ const positions: Record<View, [number, number, number]> = {
 function Rig({ product }: { product: RefObject<THREE.Group | null> }) {
   const rotating = useStudio(s => s.rotating);
   const speed = useStudio(s => s.speed);
-  const controls = useRef<OrbitControlsImpl>(null);
-  const { camera, size } = useThree();
+  const { camera, size, gl } = useThree();
+  const controls = useMemo(() => new OrbitControlsImpl(camera), [camera]);
   const config = useCamera((s) => s.config);
   const mode = useCamera((s) => s.mode);
   const view = useCamera((s) => s.view);
@@ -57,23 +57,40 @@ function Rig({ product }: { product: RefObject<THREE.Group | null> }) {
   const offset = useRef(new THREE.Vector3());
 
   useEffect(() => {
+    controls.connect(gl.domElement);
+    controls.enablePan = false;
+    controls.dampingFactor = .08;
+    controls.maxPolarAngle = Math.PI * .94;
+    const interrupt = () => { moving.current = false; };
+    controls.addEventListener("start", interrupt);
+    return () => {
+      controls.removeEventListener("start", interrupt);
+      controls.dispose();
+    };
+  }, [controls, gl]);
+
+  useEffect(() => {
+    // Drain drag momentum once before starting a preset transition.
+    controls.autoRotate = false;
+    controls.enableDamping = false;
+    controls.update();
     direction.current.set(...positions[view]).normalize();
     moving.current = true;
     settling.current = 2;
-  }, [view, tick]);
+  }, [view, tick, controls]);
   useEffect(() => {
     // Measure throughout assembly/lens animations, then keep the stable bounds.
     settling.current = 2;
   }, [config, mode, size.width, size.height]);
   useEffect(() => {
-    if (!moving.current && controls.current) {
-      direction.current.copy(camera.position).sub(controls.current.target).normalize();
+    if (!moving.current && controls) {
+      direction.current.copy(camera.position).sub(controls.target).normalize();
     }
     moving.current = true;
   }, [camera, config.lens, config.accessories, mode, size.width, size.height]);
 
   useFrame((_, dt) => {
-    const orbit = controls.current;
+    const orbit = controls;
     const model = product.current;
     if (!orbit || !model || !(camera instanceof THREE.PerspectiveCamera)) return;
     if (settling.current > 0) {
@@ -108,6 +125,7 @@ function Rig({ product }: { product: RefObject<THREE.Group | null> }) {
       camera.position.setFromSpherical(current).add(orbit.target);
       if (Math.abs(current.theta - target.theta) < .001 && Math.abs(current.phi - target.phi) < .001 && Math.abs(current.radius - target.radius) < .01 && settling.current <= 0) moving.current = false;
     }
+    orbit.autoRotateSpeed = speed;
     orbit.autoRotate = (rotating || mode === "Cinematic") && !moving.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     orbit.update();
     // Orbit damping changes the angle: recompute the fit AFTER controls update.
@@ -119,19 +137,7 @@ function Rig({ product }: { product: RefObject<THREE.Group | null> }) {
       camera.lookAt(orbit.target);
     }
   });
-  return <OrbitControls
-    ref={controls}
-    makeDefault
-    enableDamping
-    enablePan={false}
-    dampingFactor={0.08}
-    minDistance={9}
-    maxDistance={60}
-    maxPolarAngle={Math.PI * .94}
-    autoRotate={(rotating || mode === "Cinematic") && !window.matchMedia("(prefers-reduced-motion: reduce)").matches}
-    autoRotateSpeed={speed}
-    onStart={() => { moving.current = false; }}
-  />;
+  return null;
 }
 function Product({ root }: { root: RefObject<THREE.Group | null> }) {
   const mode = useCamera((s) => s.mode);

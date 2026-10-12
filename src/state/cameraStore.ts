@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useStudio } from "./studioStore";
 import {
   defaults,
   fromSearch,
@@ -25,6 +26,7 @@ interface State {
   select: (section: Section) => void;
   setMode: (mode: Mode) => void;
   setView: (view: View) => void;
+  resetView: () => void;
   reset: () => void;
   save: () => void;
   load: () => void;
@@ -60,16 +62,22 @@ export const useCamera = create<State>((set, get) => ({
           ? { view: "Hero" as const, viewTick: s.viewTick + 1 }
           : {}),
     })),
-  setView: (view) =>
+  setView: (view) => {
+    useStudio.getState().setRotating(false);
     set((s) => ({
       view,
       viewTick: s.viewTick + 1,
       ...(view === "Detail"
         ? { mode: "Detail" as const }
-        : s.mode === "Detail"
+        : s.mode === "Detail" || s.mode === "Cinematic"
           ? { mode: "Product" as const }
           : {}),
-    })),
+    }));
+  },
+  resetView: () => {
+    useStudio.getState().setRotating(false);
+    set((s) => ({ mode: "Product", view: "Hero", viewTick: s.viewTick + 1 }));
+  },
   reset: () => {
     set({
       config: structuredClone(defaults),

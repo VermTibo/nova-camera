@@ -123,3 +123,41 @@ test("store save, reset and load preserve a complete system in device storage", 
   assert.equal(useCamera.getState().config.accessories.topHandle, true);
   assert.equal(useCamera.getState().config.accessories.cage, false);
 });
+
+test("reset camera restores the hero view and stops rotation without changing customization", async () => {
+  Object.defineProperty(globalThis, "window", {
+    value: { location: { search: "" } }, configurable: true,
+  });
+  const { useCamera } = await import("./cameraStore");
+  const { useStudio } = await import("./studioStore");
+  useCamera.getState().set("color", "#123abc");
+  const config = structuredClone(useCamera.getState().config);
+  useCamera.getState().setMode("Cinematic");
+  useStudio.getState().setRotating(true);
+  const tick = useCamera.getState().viewTick;
+  useCamera.getState().resetView();
+  assert.equal(useCamera.getState().view, "Hero");
+  assert.equal(useCamera.getState().mode, "Product");
+  assert.equal(useStudio.getState().rotating, false);
+  assert.equal(useCamera.getState().viewTick, tick + 1);
+  assert.deepEqual(useCamera.getState().config, config);
+  useCamera.getState().resetView();
+  assert.equal(useCamera.getState().viewTick, tick + 2, "reset works again after manually zooming the hero view");
+});
+
+test("preset clicks stop automatic rotation and repeated or rapid choices retrigger the transition", async () => {
+  Object.defineProperty(globalThis, "window", {
+    value: { location: { search: "" } }, configurable: true,
+  });
+  const { useCamera } = await import("./cameraStore");
+  const { useStudio } = await import("./studioStore");
+  useCamera.getState().setMode("Cinematic");
+  useStudio.getState().setRotating(true);
+  const tick = useCamera.getState().viewTick;
+  for (const view of ["Front", "Back", "Back", "Top", "Detail", "Hero"] as const)
+    useCamera.getState().setView(view);
+  assert.equal(useCamera.getState().view, "Hero");
+  assert.equal(useCamera.getState().mode, "Product");
+  assert.equal(useCamera.getState().viewTick, tick + 6);
+  assert.equal(useStudio.getState().rotating, false);
+});

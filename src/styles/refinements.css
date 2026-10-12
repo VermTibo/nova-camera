@@ -115,3 +115,71 @@
 @media (max-height: 500px) and (orientation: landscape) {
   .stage-top-actions .photo-panel { position: fixed; inset: 12px 12px 12px auto; max-height: calc(100dvh - 24px); z-index: 10; }
 }
+
+/* A quieter canvas and fewer competing actions. */
+.main-header { height: 72px; border-bottom: 0; }
+.stage:after { display: none; }
+.stage { background: radial-gradient(ellipse at 50% 45%, #1b2639, #0b0d12 75%); }
+.stage-heading { top: 28px; }
+.stage-heading h1 { font-size: clamp(28px, 4.5cqw, 54px); margin: 0; }
+.stage-top-actions { top: 100px; align-items: flex-start; }
+.stage-top-actions > .photo-studio > button, .viewer-options > summary { border: 0; background: #ffffff0a; border-radius: 8px; padding: 12px 16px; min-height: 44px; }
+.viewer-options { position: relative; }
+.viewer-options > summary { cursor: pointer; font-size: 12px; list-style: none; }
+.viewer-options > summary::-webkit-details-marker { display: none; }
+.viewer-options-panel { position: absolute; top: 52px; right: 0; width: 170px; padding: 8px; background: #11141b; border-radius: 10px; box-shadow: 0 12px 36px #0008; }
+.viewer-options-panel button { width: 100%; min-height: 44px; border: 0; border-radius: 5px; }
+.viewer-options-panel button[aria-pressed="true"] { background: #3478f72b; color: #fff; }
+.viewer-tools { bottom: 28px; justify-content: center; flex-wrap: wrap; gap: 10px; }
+.view-presets { display: flex; width: auto; gap: 2px; padding: 5px; border: 0; border-radius: 12px; background: #11141bcc; }
+.view-presets button { width: 44px; min-height: 44px; border-radius: 8px; padding: 0; }
+.view-presets button.active { background: #3478f7; color: #fff; }
+.reset-camera-button { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 14px; background: #11141bcc; border-radius: 8px; font-size: 12px; }
+.fullscreen-button { border: 0; border-radius: 8px; background: #11141bcc; }
+.header-actions .shot-lab-button { min-height: 44px; padding: 10px 14px; box-shadow: none; }
+.header-actions .share-button { width: 44px; height: 44px; padding: 0; justify-content: center; border: 0; }
+.header-actions .share-button > svg:last-child { display: block; margin: 0; }
+.config-title { padding-block: 26px 18px; }
+.config-title h2 { margin: 0; font-size: 24px; }
+.category-tabs { border: 0; gap: 4px; padding-bottom: 12px; }
+.category-tabs button { justify-content: center; background: transparent; border: 0; padding: 10px 6px; color: var(--muted); }
+.category-tabs button.active { background: #ffffff0d; color: #fff; }
+.category-tabs button:hover:not(.active) { background: #ffffff07; color: #fff; }
+.config-scroll { padding-top: 20px; }
+.body-options { gap: 6px; }
+.body-option { min-height: 52px; border: 0; background: #ffffff06; border-radius: 8px; padding: 14px; }
+.body-option strong { font-size: 17px; }
+.body-option.selected { background: #3478f724; box-shadow: inset 0 0 0 1px #3478f7; }
+.body-option.selected > span:last-child { color: #fff; }
+.field legend, .engraving > span { color: var(--muted); font-size: 11px; letter-spacing: .08em; }
+.advanced-options { margin: 0 0 24px; }
+.advanced-options > summary { cursor: pointer; min-height: 44px; padding: 12px 0; color: var(--muted); font-size: 13px; }
+.advanced-options[open] > summary { margin-bottom: 14px; color: #fff; }
+.advanced-options .field:last-child { margin-bottom: 0; }
+.toggle-row { border: 0; padding-block: 14px; }
+.toggle-end { flex-direction: row; align-items: center; gap: 12px; }
+.segments button, .lens-options button { border-color: transparent; background: #ffffff06; border-radius: 6px; }
+.lens-options button.selected { border-color: var(--brand); }
+.config-footer { padding-block: 14px; }
+.summary-toggle { gap: 12px; font-size: 13px; min-height: 44px; }
+.summary-toggle strong { margin-left: auto; font-size: 27px; color: #f3d2c6; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 900px) {
+  .stage { height: clamp(460px, 70dvh, 700px); }
+  .stage-heading h1 { font-size: clamp(30px, 6cqw, 48px); }
+  .stage-top-actions { top: 92px; }
+  .stage-top-actions .photo-panel { max-height: 290px; }
+  .body-options { flex-direction: column; }
+}
+@media (max-width: 600px) {
+  .stage-heading { top: 22px; }
+  .viewer-tools { bottom: 20px; column-gap: 8px; }
+  .view-presets { flex-basis: 100%; justify-content: center; background: transparent; padding: 0; }
+  .view-presets button { background: #11141bcc; }
+  .category-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .config-title h2 { font-size: 23px; }
+  .header-actions .share-button { padding: 0; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .stage-top-actions .photo-panel { max-height: calc(100dvh - 24px); }
+}

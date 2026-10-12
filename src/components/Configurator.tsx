@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
   ArrowUpRight,
   Check,
-  ChevronRight,
   Plus,
   Minus,
   RotateCcw,
@@ -58,13 +57,11 @@ function Choices<T extends string>({
 }
 function Toggle({
   title,
-  detail,
   on,
   onClick,
   amount,
 }: {
   title: string;
-  detail?: string;
   on: boolean;
   onClick: () => void;
   amount?: number;
@@ -78,7 +75,6 @@ function Toggle({
     >
       <span>
         <strong>{title}</strong>
-        {detail && <small>{detail}</small>}
       </span>
       <span className="toggle-end">
         {amount !== undefined && <small>+{money(amount)}</small>}
@@ -111,7 +107,6 @@ export default function Configurator() {
       <Toggle
         key={k}
         title={accessoryCatalog[k].name}
-        detail={accessoryCatalog[k].detail}
         on={c.accessories[k]}
         onClick={() => toggle(k)}
         amount={accessoryCatalog[k].price}
@@ -123,13 +118,7 @@ export default function Configurator() {
       aria-label="Camera configurator"
     >
       <div className="config-title">
-        <span className="eyebrow">MAKE IT YOURS</span>
-        <span className="step-count">
-          0{sections.indexOf(section) + 1} <span>/ 06</span>
-        </span>
-        <h2>
-          Customize your camera.
-        </h2>
+        <h2>Customize</h2>
       </div>
       <nav className="category-tabs" role="tablist" aria-label="Configuration categories">
         {sections.map((s) => (
@@ -158,39 +147,12 @@ export default function Configurator() {
         ))}
       </nav>
       <div className="config-scroll" id="configuration-panel" role="tabpanel" aria-labelledby={`tab-${section}`} tabIndex={0} key={section}>
-        <div className="section-heading">
-          <h3>
-            {section === "Body"
-              ? "The foundation."
-              : section === "Lens"
-                ? "A different perspective."
-                : section === "View"
-                  ? "See it your way."
-                  : section === "Handling"
-                    ? "Made for your hands."
-                    : section === "Accessories"
-                      ? "Expand your possibilities."
-                      : "Every detail matters."}
-          </h3>
-          <p>
-            {
-              {
-                Body: "Precision engineered. Uniquely yours.",
-                Lens: "Exceptional clarity, at every focal length.",
-                View: "A direct connection to your subject.",
-                Handling: "Balance, comfort and complete control.",
-                Accessories: "A modular system. Ready for anything.",
-                Details: "The finishing touches that make it yours.",
-              }[section]
-            }
-          </p>
-        </div>
         {section === "Body" && (
           <>
             <fieldset className="field">
               <legend>CAMERA BODY</legend>
               <div className="body-options">
-                {(["N1", "N1R", "N1C"] as const).map((body, i) => (
+                {(["N1", "N1R", "N1C"] as const).map((body) => (
                   <button
                     key={body}
                     className={`body-option ${c.body === body ? "selected" : ""}`}
@@ -199,15 +161,7 @@ export default function Configurator() {
                   >
                     <span>
                       <strong>SONY {bodyNames[body]}</strong>
-                      <small>
-                        {
-                          [
-                            "The original · Full frame",
-                            "Resolution · Every detail",
-                            "Compact · Create anywhere",
-                          ][i]
-                        }
-                      </small>
+
                     </span>
                     <span>
                       {c.body === body ? (
@@ -248,32 +202,18 @@ export default function Configurator() {
                   />
                 </label>
               </div>
-              <div className="color-caption">
-                <span>
-                  {name} / {c.finish.toLowerCase()} finish
-                </span>
-                <span>01—04 + CUSTOM</span>
-              </div>
             </fieldset>
-            <Choices
-              label="SURFACE FINISH"
-              options={["Satin", "Matte", "Brushed"]}
-              value={c.finish}
-              onChange={(v) => set("finish", v)}
-            />
-            <Choices
-              label="GRIP MATERIAL"
-              options={["Rubber", "Leather", "Walnut"]}
-              value={c.grip}
-              onChange={(v) => set("grip", v)}
-            />
+            <details className="advanced-options">
+              <summary>Surface finish</summary>
+              <Choices label="FINISH" options={["Satin", "Matte", "Brushed"]} value={c.finish} onChange={v => set("finish", v)} />
+            </details>
           </>
         )}
         {section === "Lens" && (
           <>
             <fieldset className="field">
               <legend>
-                SONY FE OPTICS <span>7 precision lenses</span>
+                LENS
               </legend>
               <div className="lens-options">
                 {lenses.map((l) => (
@@ -293,6 +233,8 @@ export default function Configurator() {
                 ))}
               </div>
             </fieldset>
+            <details className="advanced-options">
+              <summary>Lens options</summary>
             <Choices
               label="LENS FINISH"
               options={["Obsidian", "Silver"]}
@@ -301,7 +243,6 @@ export default function Configurator() {
             />
             <Toggle
               title="Lens hood"
-              detail="Flared metal · stray-light protection"
               amount={90}
               on={c.hood}
               onClick={() => set("hood", !c.hood)}
@@ -312,6 +253,7 @@ export default function Configurator() {
               value={c.filter}
               onChange={(v) => set("filter", v)}
             />
+            </details>
           </>
         )}
         {section === "View" && (
@@ -337,18 +279,6 @@ export default function Configurator() {
               value={c.sensor}
               onChange={(v) => set("sensor", v)}
             />
-            <div className="spec-card">
-              <span>EVERY FRAME. EVERY DETAIL.</span>
-              <strong>
-                {c.body === "N1R" ? "61" : c.body === "N1C" ? "48" : "45"}
-                <small> MP</small>
-              </strong>
-              <p>
-                {c.sensor} · Backside illuminated
-                <br />
-                15-stop dynamic range · In-body stabilization
-              </p>
-            </div>
           </>
         )}
         {section === "Handling" && (
@@ -369,13 +299,9 @@ export default function Configurator() {
               "flash",
               "microphone",
               "monitor",
-              "batteryGrip",
               "rails",
             ])}
-            <p className="field-note">
-              Handles and cage are selected separately. Flash and microphone use
-              separate mounts when combined.
-            </p>
+
           </>
         )}
         {section === "Details" && (
@@ -416,8 +342,9 @@ export default function Configurator() {
                 onChange={(e) => set("engraving", e.target.value)}
                 aria-label="Personal engraving"
               />
-              <small>Precision etched on the front top plate.</small>
             </label>
+            <details className="advanced-options">
+              <summary>Saved configuration</summary>
             <div className="storage-actions">
               <button onClick={save}>
                 Save configuration <Plus size={15} />
@@ -425,17 +352,11 @@ export default function Configurator() {
               <button onClick={load}>
                 Load saved configuration <ArrowUpRight size={15} />
               </button>
+              <button onClick={() => setConfirm(true)}>Reset configuration <RotateCcw size={15} /></button>
             </div>
+            </details>
           </>
         )}
-        <div className="module-note">
-          <span className="module-mark">N</span>
-          <p>
-            One system. Endless possibilities.
-            <br />
-            <span>Every component, working as one.</span>
-          </p>
-        </div>
       </div>
       <footer className="config-footer">
         <button
@@ -443,7 +364,7 @@ export default function Configurator() {
           aria-expanded={summary}
           onClick={() => setSummary(!summary)}
         >
-          <span>YOUR CONFIGURATION</span>
+          <span>Summary</span><strong>{money(price(c))}</strong>
           {summary ? <Minus size={15} /> : <Plus size={15} />}
         </button>
         {summary && (
@@ -498,28 +419,6 @@ export default function Configurator() {
             </p>
           </div>
         )}
-        <div className="total-line">
-          <div>
-            <strong>{money(price(c))}</strong>
-            <span>Concept system · indicative price</span>
-          </div>
-          <button
-            className="review-button"
-            aria-label="Review configuration"
-            onClick={() => setSummary(!summary)}
-          >
-            <ChevronRight size={22} />
-          </button>
-        </div>
-        <div className="footer-meta">
-          <span>DESIGNED FOR THE WAY YOU SEE.</span>
-          <button
-            onClick={() => setConfirm(true)}
-            aria-label="Reset configuration"
-          >
-            <RotateCcw size={13} />
-          </button>
-        </div>
       </footer>
       {confirm && (
         <Modal label="Reset configuration" onClose={() => setConfirm(false)}>
@@ -532,7 +431,6 @@ export default function Configurator() {
             >
               <X size={19} />
             </button>
-            <span className="eyebrow">A FRESH PERSPECTIVE</span>
             <h3 id="reset-title">Start again?</h3>
             <p>
               Return to the original Sony A7 III configuration. Your saved

@@ -40,6 +40,17 @@ Implemented in code; browser visual acceptance is still pending.
 - [x] Add responsive desktop, tablet, mobile, and short-window layouts with larger touch controls and scrollable dialogs.
 - [ ] Visually verify flips, all tab contents, standalone mounts, game launch, and responsive layouts in a connected browser.
 
+## Additional user feedback — 12 October 2026
+
+Implemented in code; visual acceptance remains pending.
+
+- [x] Simplify the entire design: remove repeated captions, slogans, small secondary text, decorative lines, the background wordmark, and the status footer.
+- [x] Fix rotation/viewpoint controls: update the orbit once per frame, clear drag momentum before transitions, stop automatic rotation when choosing a view, and use icons with accessible labels and tooltips.
+- [x] Simplify customization: remove promotional headings, duplicate controls, and accessory descriptions; combine price and summary into one footer action.
+- [x] Add a visible reset camera button that restores the default view and zoom, stops rotation, and preserves customization.
+- [x] Reduce visible controls: move presentation modes into More, and place surface finish, lens options, and saved configurations in expandable sections.
+- [ ] Verify the simplified layout, icon controls, repeated view changes, and reset behavior visually on desktop and mobile. Chrome inspection was blocked by missing computer-use permissions.
+
 ## Priority 1 — Visual and interaction verification
 
 Browser verification has been blocked by unavailable browser access. Complete these checks before considering the visual work finished.
@@ -76,7 +87,7 @@ These are proposals, not implemented features or committed scope.
 
 ## Validation
 
-Most recent completed checks (12 October 2026): production build passed; all 22 automated tests passed, including independent handle/cage pricing and persistence and shortest-orbit transitions. Browser visual verification remains blocked because this session has no connected browser. These checks do not replace browser or export verification.
+Most recent completed checks (12 October 2026): production build passed; all 24 automated tests passed, including independent handle/cage pricing and persistence shortest-orbit transitions, camera reset, and repeated preset selection. Browser visual verification remains blocked: no browser connector is available, and native Chrome inspection requires unavailable computer-use permissions. These checks do not replace browser or export verification.
 
 ```bash
 npm run dev

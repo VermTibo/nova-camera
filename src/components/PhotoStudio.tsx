@@ -58,12 +58,10 @@ export default function PhotoStudio() {
   return <div className="photo-studio" ref={root}>
     <button ref={trigger} className={open ? 'active' : ''} aria-expanded={open} aria-controls="photo-studio-panel" onClick={() => setOpen(!open)}><SlidersHorizontal size={16} /><span>STUDIO</span></button>
     {open && <section id="photo-studio-panel" className="photo-panel" aria-label="Photo studio">
-      <div className="photo-heading"><div><span className="photo-kicker">THE DIRECTOR'S DESK / 01</span><h2>MAKE IT YOUR SHOT.</h2></div><button aria-label="Close photo studio" onClick={() => { setOpen(false); trigger.current?.focus(); }}><X size={17} /></button></div>
-      <p>Same camera. A different atmosphere.</p>
+      <div className="photo-heading"><div><h2>Photo studio</h2></div><button aria-label="Close photo studio" onClick={() => { setOpen(false); trigger.current?.focus(); }}><X size={17} /></button></div>
       <div className="photo-looks" aria-label="Lighting looks">
         {(Object.entries(lightingLooks) as [LightingLook, typeof lightingLooks[LightingLook]][]).map(([id, look]) => <button key={id} aria-pressed={studio.look === id} className={`photo-look ${studio.look === id ? 'chosen' : ''}`} style={{ '--look-color': look.backdrop, '--rim-color': look.rim } as CSSProperties} onClick={() => studio.setLook(id)}><span className="look-orb" aria-hidden="true" /><span>{look.name}</span>{studio.look === id && <Check size={12} />}</button>)}
       </div>
-      <p className="photo-mood" aria-live="polite">{lightingLooks[studio.look].mood}</p>
       <label className="photo-slider"><span>LIGHT INTENSITY <output>{Math.round(studio.brightness * 100)}%</output></span><input aria-label="Light intensity" type="range" min="60" max="150" value={Math.round(studio.brightness * 100)} onChange={e => studio.setBrightness(Number(e.target.value) / 100)} /></label>
       <div className="photo-turntable"><span>TURNTABLE</span><button disabled={reduced} aria-pressed={rotating && !reduced} onClick={() => { if (mode === 'Cinematic') useCamera.getState().setMode('Product'); studio.setRotating(!rotating); }}>{rotating && !reduced ? <Pause size={14} /> : <Play size={14} />}{rotating && !reduced ? 'PAUSE' : 'PLAY'}</button></div>
       {reduced ? <p className="photo-mood">Motion is off to match your reduced-motion preference.</p> : <label className="photo-slider"><span>ROTATION SPEED <output>{studio.speed.toFixed(2)}×</output></span><input aria-label="Rotation speed" type="range" min="15" max="120" value={Math.round(studio.speed * 100)} onChange={e => studio.setSpeed(Number(e.target.value) / 100)} /></label>}

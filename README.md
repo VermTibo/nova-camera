@@ -24,9 +24,9 @@ Open the local URL printed by Vite. The usual port is `5173`; Vite selects anoth
 ### Interactive camera viewer
 
 - Rotate the model by dragging and zoom with the scroll wheel or pinch gesture.
-- Switch between Hero, Front, Back, Top, Side, and Detail viewpoints.
-- Explore the separated components with **EXPLODE**, then restore them with **ASSEMBLE**.
-- Use Product, Technical, or Cinematic presentation modes.
+- Use the icon buttons for Hero, Front, Back, Top, Side, and Detail viewpoints; each has a tooltip and accessible label. Selecting a view stops automatic rotation.
+- Open **More** to explode or assemble the camera and switch presentation modes.
+- **Reset camera** restores the default view and zoom, stops rotation, and keeps your customization.
 - Expand the viewer with the fullscreen button.
 - Automatic framing accounts for viewport size, lens changes, and accessories. Zoom is constrained to keep the assembly visible.
 - Surface-following lens markings, a curved front inscription, and sharp Detail rendering keep the model readable.
@@ -40,11 +40,11 @@ Customize three concept body variants labeled A7 III, A7R, and A7C, with options
 - Viewfinder, rear screen, sensor, mount, and accent color.
 - Cage, top handle, side handle, flash, microphone, monitor, battery grip, strap, and rails.
 
-Prices update as the configuration changes. Handles use independent mounts; selecting a handle or removing the cage leaves other accessory choices unchanged. Clicking model components opens the corresponding configuration section.
+Surface finish and lens options expand on demand. The footer combines the total price and expandable summary. Prices update as the configuration changes. Handles use independent mounts; selecting a handle or removing the cage leaves other accessory choices unchanged. Clicking model components opens the corresponding configuration section.
 
 ### Photo Studio
 
-Open **STUDIO** beside **EXPLODE** to direct your product shot.
+Open **STUDIO** beside **More** to direct your product shot.
 
 | Look | Direction |
 | --- | --- |
@@ -58,13 +58,13 @@ Studio settings last for the current page session. Configuration links do not in
 
 ### Shot Lab
 
-Open **SHOT LAB** for an illustrated photography simulator with three challenges: a still life, a moving cyclist, and a night scene. Adjust focus distance, aperture, shutter speed, and ISO, then capture a shot and review the feedback.
+Select **PLAY GAME** for an illustrated photography simulator with three challenges: a still life, a moving cyclist, and a night scene. Adjust focus distance, aperture, shutter speed, and ISO, then capture a shot and review the feedback.
 
 Each shot scores up to 100 points: 40 for focus, 40 for exposure, and 20 for motion sharpness. This is a simplified learning simulation and does not access a webcam. Closing the lab resets its progress without changing the configured camera.
 
 ## Save and share
 
-The **Details** section provides save, load, and reset actions. Saved configurations use browser `localStorage` and belong to the current browser and origin. Changing the local server port creates a different origin, so a save from another port will not appear there.
+Expand **Saved configuration** in **Details** for save, load, and configuration reset actions. Saved configurations use browser `localStorage` and belong to the current browser and origin. Changing the local server port creates a different origin, so a save from another port will not appear there.
 
 **Share Configuration** creates a URL containing the camera configuration. The app attempts to copy it to the clipboard and also displays it in a selectable text field. Recipients need access to the app at the link's address; a `localhost` link is only useful on a machine running the project at that address.
 
@@ -143,7 +143,7 @@ For renderer diagnostics, append `?debug=true` to the URL, or `&debug=true` if i
 
 ## Validation and project status
 
-The latest completed checks passed the production build and all **21 automated tests**. Coverage includes configuration normalization and pricing, URL round trips, storage, accessory dependencies, Shot Lab scoring, camera framing, decal geometry, and studio control limits.
+The latest completed checks passed the production build and all **24 automated tests**. Coverage includes configuration normalization and pricing, URL round trips, storage, independent accessories, camera reset, repeated preset selection, Shot Lab scoring, camera framing, decal geometry, and studio control limits.
 
 Browser access was unavailable during the latest changes. Visual acceptance, mobile and fullscreen interactions, lighting quality, and downloaded posters still need browser verification. Passing automated checks does not confirm those visual results.
 
