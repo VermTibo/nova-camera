@@ -154,6 +154,7 @@ export function Lens({ explode }: { explode: boolean }) {
         ))}
         <Label
           text={`FE ${lens.name} F${lens.aperture} GM`}
+          color={silver ? "#141b23" : "#dadcd6"}
           position={[0, r * 0.94 + 0.003, base + l * 0.53]}
           radius={r * 0.94}
           rotation={[-Math.PI / 2, 0, 0]}
@@ -162,6 +163,7 @@ export function Lens({ explode }: { explode: boolean }) {
         />
         <Label
           text="0.4   0.7   1   2   5   ∞"
+          color={silver ? "#141b23" : "#dadcd6"}
           position={[0, r * 0.94 + 0.003, base + l * 0.08]}
           radius={r * 0.94}
           rotation={[-Math.PI / 2, 0, 0]}
@@ -250,8 +252,7 @@ export function Lens({ explode }: { explode: boolean }) {
           />
           <mesh
             position={[0, 0, 0.025]}
-            rotation={[Math.PI / 2, 0, 0]}
-            scale={[1, 0.12, 1]}
+            scale={[1, 1, 0.12]}
           >
             <sphereGeometry args={[r * 0.725, 64, 32]} />
             <meshPhysicalMaterial
@@ -282,7 +283,7 @@ export function Lens({ explode }: { explode: boolean }) {
             <group position={[0, 0, 0.38]}>
               <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
                 <cylinderGeometry
-                  args={[r * 1.19, r * 0.99, 0.62, 80, 1, true]}
+                  args={[r * 0.99, r * 1.19, 0.62, 80, 1, true]}
                 />
                 <meshStandardMaterial
                   color={silver ? "#9a9f99" : "#151918"}

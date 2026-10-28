@@ -24,3 +24,11 @@ test('flat body badges remain flat and retain their requested dimensions', () =>
   assert.equal(geometry.boundingBox!.max.z, 0);
   geometry.dispose();
 });
+
+
+// Paint can be any custom hex color; white markings must not disappear on pale bodies.
+import { markingColor } from './materialColors';
+test('model markings remain legible on dark, pale, and saturated paint', () => {
+  for (const color of ['#000000', '#151515', '#143358']) assert.equal(markingColor(color), '#f4f6f8');
+  for (const color of ['#ffffff', '#f3d2c6', '#bfc5ca', '#ffff00']) assert.equal(markingColor(color), '#141b23');
+});

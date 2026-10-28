@@ -2,6 +2,8 @@
 
 **Your perspective. No limits.**
 
+NOVA uses a light ivory and blue-grey studio interface with cobalt selections and terracotta actions. Camera paint remains independently customizable.
+
 NOVA is an interactive 3D camera configurator inspired by the Sony Alpha series. Build a camera, explore its components, direct the lighting, and export a product poster—all in the browser.
 
 The camera is a procedural concept model. Product names, specifications, and prices are presentation data; the app has no checkout or backend.

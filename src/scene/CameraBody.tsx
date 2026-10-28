@@ -1,3 +1,4 @@
+import { markingColor } from "./materialColors";
 import { motionDamp } from "./motion";
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
@@ -29,6 +30,7 @@ function FinderHousing({ color, height, roughness }: { color: string; height: nu
 export function CameraBody({ explode }: { explode: boolean }) {
   const c = useCamera((s) => s.config),
     select = useCamera((s) => s.select);
+  const ink = markingColor(c.color);
   const grip = useRef<THREE.Group>(null);
   const rear = useRef<THREE.Group>(null);
   const finish =
@@ -185,6 +187,7 @@ export function CameraBody({ explode }: { explode: boolean }) {
             />
             <Label
               text={i ? "−  ·  +" : "M  A  S  P"}
+              color={ink}
               position={[0, 0, 0.085]}
               width={i ? 0.30 : 0.38}
               height={0.075}
@@ -206,6 +209,7 @@ export function CameraBody({ explode }: { explode: boolean }) {
         />
         <Label
           text="REC"
+          color={ink}
           position={[0.52, 1.009, 0.38]}
           rotation={[-Math.PI / 2, 0, 0]}
           width={0.19}
@@ -229,7 +233,7 @@ export function CameraBody({ explode }: { explode: boolean }) {
             <Label text="SONY" font="Georgia, serif" weight={700}
               position={[-0.05, 1.18, 0.52 - 0.27 * 0.24 / (c.viewfinder === "Cinema" ? 0.68 : 0.56) + 0.003]}
               rotation={[-Math.atan(0.24 / (c.viewfinder === "Cinema" ? 0.68 : 0.56)), 0, 0]}
-              width={0.88} height={0.26} color="#ffffff" />
+              width={0.88} height={0.26} color={ink} />
             <Block
               size={[0.83, 0.5, 0.3]}
               radius={0.09}
@@ -287,10 +291,11 @@ export function CameraBody({ explode }: { explode: boolean }) {
         position={[-1.18, 0.745, 0.453]}
         width={c.viewfinder === "None" ? 0.64 : 0.30}
         height={c.viewfinder === "None" ? 0.22 : 0.36}
-        color="#ffffff"
+        color={ink}
       />
       <Label
         text={c.body === "N1" ? "7 III" : c.body === "N1R" ? "7 R" : "7 C"}
+        color={ink}
         position={[-1.19, 0.43, 0.524]}
         width={0.38}
         height={0.11}
@@ -300,7 +305,7 @@ export function CameraBody({ explode }: { explode: boolean }) {
         position={[-1.18, -0.40, 0.524]}
         width={0.63}
         height={0.095}
-        color="#ffffff"
+        color={ink}
       />
       <Cylinder
         radius={0.037}

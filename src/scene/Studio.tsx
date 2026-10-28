@@ -238,7 +238,6 @@ export default function Studio({ paused = false }: { paused?: boolean }) {
         }}
       >
         <ContextGuard />
-        {mode === "Detail" && <color attach="background" args={["#000000"]} />}
         {new URLSearchParams(window.location.search).get("debug") ===
           "true" && <Diagnostics />}
         <ambientLight intensity={lighting.ambient * brightness} />

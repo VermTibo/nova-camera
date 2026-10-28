@@ -1,6 +1,6 @@
 # NOVA Camera — Project Plan
 
-Updated: 12 October 2026
+Updated: 28 October 2026
 
 ## Goal
 
@@ -9,7 +9,7 @@ Create a polished, interactive camera configurator with a fully visible model, c
 ## Design direction
 
 - **Typography:** locally bundled Anton, approved as an alternative to the TT Burn Condensed reference in `public/font-modern.png`.
-- **Palette:** Pure Black `#000000`, Cobalt Blue `#3478F7`, Tangerine `#EC562E`, Petal Peach `#F3D2C6`, based on `public/kleur-modern.png`.
+- **Palette:** warm ivory `#F5F4F0`, soft blue-grey surfaces, ink `#243449`, cobalt `#2864D7`, and terracotta `#BF4325`. Camera paint remains independently customizable.
 - **Model:** realistic materials, restrained reflections, readable markings attached to their surfaces, and complete framing across camera angles.
 - **Interaction:** responsive controls, keyboard access, and respect for reduced-motion preferences.
 
@@ -112,3 +112,15 @@ Use the local address printed by Vite; the port can change if another server is 
 - Lighting presets and turntable controls work predictably without unwanted motion.
 - Exported posters are sharp, correctly framed, and readable.
 - Build and automated tests pass, and visual verification is documented.
+
+
+## Final upload preparation — 28 October 2026
+
+- Light palette applied across the configurator, all viewer modes, Studio, Shot Lab, dialogs, and PNG posters.
+- Brighter ambient lighting preserves detail in dark camera materials.
+- Lens hood now widens toward its front rim; the glass transform explicitly flattens along the optical axis.
+- Body lettering and engraving adapt to paint brightness; silver lens barrel markings use dark ink.
+- Detail mode retains the selected studio background instead of covering it with black.
+- All 26 automated tests pass, including the new marking-contrast regression.
+- Production build passes. The sibling `nova-camera-upload.zip` contains the built site with index.html at the archive root.
+- Visual acceptance remains outstanding: no connected browser is available, and native Chrome access timed out twice. Desktop/mobile appearance, accessory intersections, fullscreen, and downloaded PNG appearance have not been visually certified in this pass.
