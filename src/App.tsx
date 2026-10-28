@@ -1,6 +1,7 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
   Gamepad2,
+  CircleHelp,
   Box,
   Camera,
   PanelTop,
@@ -14,6 +15,7 @@ import {
   Share2,
 } from "lucide-react";
 import { Modal } from "./components/Modal";
+import Welcome from "./components/Welcome";
 import Configurator from "./components/Configurator";
 import PhotoStudio from "./components/PhotoStudio";
 import { useStudio } from "./state/studioStore";
@@ -24,6 +26,16 @@ import { bodyNames } from "./data/catalog";
 const viewIcons = { Hero: Box, Front: Camera, Back: RectangleHorizontal, Top: PanelTop, Side: PanelLeft, Detail: ScanSearch };
 const Studio = lazy(() => import("./scene/Studio"));
 export default function App() {
+  const helpButton = useRef<HTMLButtonElement>(null);
+  const [welcome, setWelcome] = useState(() => {
+    try { return localStorage.getItem("nova-welcome-v1") !== "seen"; }
+    catch { return true; }
+  });
+  const closeWelcome = () => {
+    try { localStorage.setItem("nova-welcome-v1", "seen"); } catch { /* Guide remains usable without storage. */ }
+    setWelcome(false);
+    requestAnimationFrame(() => helpButton.current?.focus());
+  };
   const lighting = useStudio(s => s.look);
   const { config, mode, setMode, view, setView, resetView, notice, notify, ready } =
     useCamera();
@@ -54,6 +66,7 @@ export default function App() {
           NOVA
         </a>
         <div className="header-actions">
+        <button ref={helpButton} className="help-button" aria-label="How to use NOVA" title="How to use NOVA" onClick={() => setWelcome(true)}><CircleHelp size={20} /></button>
         <button className="shot-lab-button" aria-label="Play Shot Lab photography game" onClick={() => setShotLab(true)}><Gamepad2 size={21} /><span className="game-button-copy"><strong>PLAY GAME</strong></span></button>
         <button className="share-button" aria-label="Share configuration" title="Share configuration" onClick={doShare}>
           {copied ? <Check size={15} /> : <Share2 size={15} />}
@@ -155,6 +168,7 @@ export default function App() {
         </section>
         <Configurator />
       </main>
+      {welcome && <Welcome onClose={closeWelcome} />}
       {shotLab && <ShotLab onClose={() => setShotLab(false)} />}
       {notice && (
         <div className="toast" role="status">

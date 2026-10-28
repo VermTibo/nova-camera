@@ -124,3 +124,9 @@ Use the local address printed by Vite; the port can change if another server is 
 - All 26 automated tests pass, including the new marking-contrast regression.
 - Production build passes. The sibling `nova-camera-upload.zip` contains the built site with index.html at the archive root.
 - Visual acceptance remains outstanding: no connected browser is available, and native Chrome access timed out twice. Desktop/mobile appearance, accessory intersections, fullscreen, and downloaded PNG appearance have not been visually certified in this pass.
+
+## Welcome guide — 28 October 2026
+
+- Added a dismissible first-visit introduction with mouse/touch instructions, customization, Studio, exploded view, Shot Lab, and sharing.
+- Added an accessible header help button to reopen it; dismissal is remembered when local storage is available.
+- Uses the existing keyboard-accessible dialog with responsive, scrollable content. Production build passes; browser visual verification remains unavailable.

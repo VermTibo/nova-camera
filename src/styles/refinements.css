@@ -237,3 +237,25 @@ summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 }
 
 .mode-detail .stage-heading { opacity: 1; }
+
+/* A brief first-visit guide, always available again from the header. */
+.header-actions .help-button { width: 44px; height: 44px; padding: 0; display: grid; place-items: center; border-radius: 8px; flex-shrink: 0; }
+.help-button:hover { background: #e2eafa; color: var(--brand); }
+.native-modal.welcome-modal { position: relative; width: min(540px, calc(100vw - 32px)); padding: 32px; background: #fafbf9; }
+.welcome-close { position: absolute; top: 12px; right: 12px; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 8px; }
+.welcome-modal > .eyebrow { font-size: 11px; letter-spacing: .12em; padding-right: 36px; }
+.welcome-modal h2 { font-size: clamp(32px, 7vw, 42px); line-height: 1.12; margin: 18px 0 12px; }
+.native-modal .welcome-lead, .welcome-steps p, .native-modal .welcome-footnote { font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+.native-modal .welcome-lead { font-size: 14px; line-height: 1.5; margin: 0 0 24px; }
+.welcome-steps { list-style: none; padding: 0; margin: 0 0 24px; display: grid; gap: 18px; }
+.welcome-steps li { display: flex; align-items: flex-start; gap: 14px; }
+.welcome-steps li > svg { flex-shrink: 0; color: var(--brand); margin-top: 2px; }
+.welcome-steps strong { font-size: 16px; letter-spacing: .02em; }
+.native-modal .welcome-steps p { font-size: 13px; line-height: 1.5; margin: 5px 0 0; }
+.welcome-start { border-radius: 8px; font-size: 17px; min-height: 48px; }
+.native-modal .welcome-footnote { font-size: 11px; line-height: 1.5; text-align: center; margin: 12px 0 0; }
+@media (max-width: 600px) {
+  .native-modal.welcome-modal { padding: 24px; }
+  .welcome-steps { gap: 14px; }
+  .header-actions { gap: 4px; }
+}

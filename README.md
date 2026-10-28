@@ -21,6 +21,8 @@ npm run dev
 
 Open the local URL printed by Vite. The usual port is `5173`; Vite selects another port if it is occupied. No API keys, accounts, or environment variables are required.
 
+First-time visitors see a short welcome guide covering navigation, customization, Studio, and Shot Lab. Dismissing it is remembered on the device; the header help button reopens it anytime.
+
 ## Features
 
 ### Interactive camera viewer
