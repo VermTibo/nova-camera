@@ -4,9 +4,9 @@
 
 NOVA uses a light ivory and blue-grey studio interface with cobalt selections and terracotta actions. Camera paint remains independently customizable.
 
-NOVA is an interactive 3D camera configurator inspired by the Sony Alpha series. Build a camera, explore its components, direct the lighting, and export a product poster—all in the browser.
+NOVA is an interactive 3D camera configurator with Sony Alpha, Fujifilm X-T50, and Nikon D7500 camera models. Build a camera, explore its components, direct the lighting, and export a product poster—all in the browser.
 
-The camera is a procedural concept model. Product names, specifications, and prices are presentation data; the app has no checkout or backend.
+The cameras are procedural concept models built from photographic references. The Fujifilm and Nikon models use `public/fuji.webp` and `public/nikon.png`; details not visible in these single views are approximations, not manufacturer CAD. Product names, specifications, and prices are presentation data; the app has no checkout or backend.
 
 ## Quick start
 
@@ -20,6 +20,8 @@ npm run dev
 ```
 
 Open the local URL printed by Vite. The usual port is `5173`; Vite selects another port if it is occupied. No API keys, accounts, or environment variables are required.
+
+The app opens directly in the studio. Choose Sony A7 III, Fujifilm X-T50, or Nikon D7500 under **Body** in the configurator. **Change camera** in the header focuses the selected body option without leaving the viewer. Shared configuration URLs open their configured model directly. Locally bundled brand logos identify each body; sources are in [public/logos/SOURCES.md](public/logos/SOURCES.md).
 
 First-time visitors see a short welcome guide covering navigation, customization, Studio, and Shot Lab. Dismissing it is remembered on the device; the header help button reopens it anytime.
 
@@ -37,10 +39,10 @@ First-time visitors see a short welcome guide covering navigation, customization
 
 ### Camera configurator
 
-Customize three concept body variants labeled A7 III, A7R, and A7C, with options for:
+Customize three concept bodies labeled A7 III, X-T50, and D7500. Fuji has a compact body, angular finder, twin dials, shallow grip, and 16–50mm lens. Nikon has a sculpted prism, deeper grip, red trim, and 18–140mm lens with an instanced rubber tread. Options include:
 
 - Body color, finish, grip material, and engraving.
-- Seven lenses, lens finish, hood, and UV/ND filters.
+- Nine lenses, lens finish, hood, and UV/ND filters.
 - Viewfinder, rear screen, sensor, mount, and accent color.
 - Cage, top handle, side handle, flash, microphone, monitor, battery grip, strap, and rails.
 
@@ -72,7 +74,7 @@ Expand **Saved configuration** in **Details** for save, load, and configuration 
 
 **Share Configuration** creates a URL containing the camera configuration. The app attempts to copy it to the clipboard and also displays it in a selectable text field. Recipients need access to the app at the link's address; a `localhost` link is only useful on a machine running the project at that address.
 
-Incoming configuration data is validated before use. Resetting the current configuration does not delete the saved configuration.
+Incoming configuration data is validated before use. Resetting the current configuration restores the selected body’s default lens and finishes and does not delete the saved configuration. Changing bodies pairs the matching lens and sensor while preserving personal finishes, engraving, and accessories.
 
 ## Commands
 
@@ -83,6 +85,7 @@ Incoming configuration data is validated before use. Resetting the current confi
 | `npm run build` | Run TypeScript checks and build into `dist/` |
 | `npm run preview` | Preview the production build locally |
 | `npm test` | Run the automated regression suite |
+| `npm run check:models` | Inspect the actual model geometry without a browser or GPU |
 
 To preview a production build:
 
@@ -133,7 +136,7 @@ nova-camera/
 └── vite.config.ts
 ```
 
-The display names A7 III, A7R, and A7C retain the internal identifiers `N1`, `N1R`, and `N1C` for compatibility with saved configurations. The variants share a procedural body structure.
+A7 III retains the internal identifier `N1`. Legacy A7R (`N1R`) and A7C (`N1C`) saves migrate to A7 III while keeping their lens, finishes, engraving, and accessories. X-T50 and D7500 use the separate reference-body geometry in `src/scene/ReferenceBodies.tsx`.
 
 ## Accessibility and troubleshooting
 
@@ -147,8 +150,8 @@ For renderer diagnostics, append `?debug=true` to the URL, or `&debug=true` if i
 
 ## Validation and project status
 
-The latest completed checks passed the production build and all **25 automated tests**. Coverage includes configuration normalization and pricing, URL round trips, storage, independent accessories, camera reset, repeated preset selection, Shot Lab scoring, camera framing, decal geometry, and studio control limits.
+The latest completed checks passed the production build, all **30 automated tests**, and the CPU scene audit (`npm run check:models`). The audit mounts the actual model components, checks 48 configurations and over 1,500 label placements, verifies thin-panel bounds, screen and selected accessory clearances, and tests all six viewpoints at mobile, desktop, and wide viewport sizes. It uses stubbed texture canvases and does not validate rendered lighting, typography rasterization, or every possible triangle intersection. Bottom serial printing is allowed to be covered by an attached cage. Coverage includes configuration normalization and pricing, URL round trips, storage, independent accessories, camera reset, repeated preset selection, Shot Lab scoring, camera framing, decal geometry, and studio control limits.
 
-Browser access was unavailable during the latest changes. Visual acceptance, mobile and fullscreen interactions, lighting quality, and downloaded posters still need browser verification. Passing automated checks does not confirm those visual results.
+Chrome inspection was omitted as requested. Visual acceptance, mobile and fullscreen interactions, lighting quality, and downloaded posters still need browser verification. Passing automated checks does not confirm those visual results.
 
 See [plan.md](plan.md) for the remaining verification checklist and proposed next steps.

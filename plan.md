@@ -2,16 +2,22 @@
 
 Updated: 28 October 2026
 
+## Current status
+
+The lighter interface, model refinements, and first-visit welcome guide are implemented. The latest production build passes, and the upload archive has been rebuilt with the welcome guide. All 26 automated tests passed before the welcome-guide change; the build was rerun after it.
+
+**Remaining release requirement:** complete browser visual and interaction checks. No connected browser was available, and native Chrome access timed out twice. The site has been packaged locally, but has not been uploaded or published during this work.
+
 ## Goal
 
-Create a polished, interactive camera configurator with a fully visible model, crisp surface lettering, a cohesive visual identity, and a photo studio that lets users direct and capture their own product shots.
+Create a polished, interactive camera configurator with a fully visible model, crisp surface lettering, a light visual identity, a brief introduction for new visitors, and a photo studio that lets users direct and capture their own product shots.
 
 ## Design direction
 
 - **Typography:** locally bundled Anton, approved as an alternative to the TT Burn Condensed reference in `public/font-modern.png`.
 - **Palette:** warm ivory `#F5F4F0`, soft blue-grey surfaces, ink `#243449`, cobalt `#2864D7`, and terracotta `#BF4325`. Camera paint remains independently customizable.
 - **Model:** realistic materials, restrained reflections, readable markings attached to their surfaces, and complete framing across camera angles.
-- **Interaction:** responsive controls, keyboard access, and respect for reduced-motion preferences.
+- **Interaction:** responsive controls, keyboard access, and respect for reduced-motion preferences. A short first-visit guide introduces navigation and features; the header help button reopens it.
 
 ## Implemented
 
@@ -44,7 +50,7 @@ Implemented in code; browser visual acceptance is still pending.
 
 Implemented in code; visual acceptance remains pending.
 
-- [x] Simplify the entire design: remove repeated captions, slogans, small secondary text, decorative lines, the background wordmark, and the status footer.
+- [x] Simplify the entire design: remove repeated captions, slogans, small secondary text, decorative lines, and the status footer. A subtle background wordmark was subsequently restored as requested.
 - [x] Fix rotation/viewpoint controls: update the orbit once per frame, clear drag momentum before transitions, stop automatic rotation when choosing a view, and use icons with accessible labels and tooltips.
 - [x] Simplify customization: remove promotional headings, duplicate controls, and accessory descriptions; combine price and summary into one footer action.
 - [x] Add a visible reset camera button that restores the default view and zoom, stops rotation, and preserves customization.
@@ -62,7 +68,10 @@ Implemented in code; visual acceptance remains pending.
 
 Browser verification has been blocked by unavailable browser access. Complete these checks before considering the visual work finished.
 
-- [ ] Inspect desktop, short-window, tablet, and mobile layouts.
+- [ ] Inspect desktop, short-window, tablet, and mobile layouts with the light palette.
+- [ ] Verify the welcome guide appears on a first visit, dismisses via its button and Escape, and stays dismissed after reload when storage is available.
+- [ ] Verify the header help button reopens the guide, focus returns after dismissal, and its content scrolls on small screens.
+- [ ] Check guide behavior with unavailable local storage and when opening a shared configuration link.
 - [ ] Check Hero, Front, Back, Top, Side, and Detail views; rotate and zoom to their limits.
 - [ ] Check all lenses, filters, the lens hood, viewfinders, and accessory combinations in assembled and exploded views.
 - [ ] Confirm no floating, mirrored, overlapping, or clipped model text.
@@ -71,13 +80,13 @@ Browser verification has been blocked by unavailable browser access. Complete th
 - [ ] Verify the Photo Studio panel stays within the viewport and remains scrollable on small screens.
 - [ ] Verify keyboard navigation, Escape dismissal, focus visibility, sliders, and reduced-motion behavior.
 - [ ] Download and inspect posters from portrait and landscape viewers, including Detail and Technical modes.
-- [ ] Confirm poster text, lighting, framing, and transparency match the intended output.
+- [ ] Confirm poster text, lighting, and framing match the selected look; exported posters intentionally include an opaque studio background.
 - [ ] Recheck Shot Lab, configuration sharing, save/load, reset, and model selection.
 
 ## Priority 2 — Final polish
 
 - [ ] Fix issues found during visual verification before adding more features.
-- [ ] Audit remaining legacy color names and swatches in the product catalog against the new palette.
+- [ ] Confirm product paint swatches remain clearly distinguishable on the light interface; product paint is independent of the interface palette.
 - [ ] Review small text contrast and legibility in the configurator and studio panel.
 - [ ] Check performance while changing lighting, rotating, and adding accessories on a lower-powered device.
 - [ ] Tune reflection resolution or rendering quality if profiling shows a need.
@@ -94,7 +103,16 @@ These are proposals, not implemented features or committed scope.
 
 ## Validation
 
-Most recent completed checks (12 October 2026): production build passed; all 25 automated tests passed, including independent handle/cage pricing and persistence shortest-orbit transitions, camera reset, and repeated preset selection. Browser visual verification remains blocked: no browser connector is available, and native Chrome inspection requires unavailable computer-use permissions. These checks do not replace browser or export verification.
+Latest checks — 28 October 2026:
+
+- [x] Production build passed after the welcome-guide addition.
+- [x] All 26 automated tests passed after the palette/model changes, covering configuration persistence and sharing, pricing, framing, orbit transitions, model marking contrast, Shot Lab scoring, and studio controls.
+- [x] `git diff --check` passed with the welcome-guide code changes.
+- [x] Rebuilt `../nova-camera-upload.zip` from the latest `dist/`; verified archive integrity and `index.html` at its root.
+- [ ] Browser visual acceptance and PNG export inspection remain outstanding.
+- [ ] Upload to the intended host, then smoke-test the hosted page, assets, and shared configuration links.
+
+The welcome guide was build-checked; the automated suite was not rerun for that UI-only addition. Automated results do not replace browser verification.
 
 ```bash
 npm run dev
@@ -109,9 +127,10 @@ Use the local address printed by Vite; the port can change if another server is 
 - The complete camera remains visible at supported viewport sizes and normal zoom limits.
 - Model lettering follows the correct surface without visible distortion or overlap.
 - Controls remain usable on desktop and mobile, including fullscreen and keyboard operation.
+- New visitors can understand the main controls from the guide, dismiss it, and reopen it from the header.
 - Lighting presets and turntable controls work predictably without unwanted motion.
 - Exported posters are sharp, correctly framed, and readable.
-- Build and automated tests pass, and visual verification is documented.
+- Build and automated tests pass, visual verification is documented, and the hosted upload passes a final smoke test.
 
 
 ## Final upload preparation — 28 October 2026

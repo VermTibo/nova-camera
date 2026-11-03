@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Check, Download, Pause, Play, SlidersHorizontal, X } from 'lucide-react';
 import { lightingLooks, useStudio, type LightingLook } from '../state/studioStore';
 import { useCamera } from '../state/cameraStore';
-import { bodyNames, lenses } from '../data/catalog';
+import { bodyNames, bodyBrands, lensFamily, lenses } from '../data/catalog';
 import '../styles/photo-studio.css';
 
 export default function PhotoStudio() {
@@ -36,13 +36,13 @@ export default function PhotoStudio() {
       const backdrop = ctx.createRadialGradient(960, 660, 40, 960, 660, 1100);
       backdrop.addColorStop(0, lightingLooks[studio.look].backdrop); backdrop.addColorStop(1, lightingLooks[studio.look].edge);
       ctx.fillStyle = backdrop; ctx.fillRect(0, 0, 1920, 1440);
-      ctx.fillStyle = '#243449'; ctx.font = '96px Anton'; ctx.fillText('NOVA / ALPHA', 90, 160);
+      ctx.fillStyle = '#243449'; ctx.font = '96px Anton'; ctx.fillText('NOVA / CAMERA SYSTEM', 90, 160);
       ctx.fillStyle = '#bf4325'; ctx.font = '28px Anton'; ctx.fillText('YOUR PERSPECTIVE. NO LIMITS.', 94, 218);
       const fit = Math.min(1740 / source.width, 1050 / source.height);
       ctx.drawImage(source, (1920 - source.width * fit) / 2, 210 + (1050 - source.height * fit) / 2, source.width * fit, source.height * fit);
       ctx.strokeStyle = '#24344930'; ctx.beginPath(); ctx.moveTo(90, 1270); ctx.lineTo(1830, 1270); ctx.stroke();
-      ctx.fillStyle = '#243449'; ctx.font = '42px Anton'; ctx.fillText(`SONY ${bodyNames[config.body]}`, 90, 1340);
-      ctx.font = '24px Anton'; ctx.fillText(`FE ${lenses.find(l => l.id === config.lens)?.name} / ${lightingLooks[studio.look].name.toUpperCase()}`, 90, 1385);
+      ctx.fillStyle = '#243449'; ctx.font = '42px Anton'; ctx.fillText(`${bodyBrands[config.body]} ${bodyNames[config.body]}`, 90, 1340);
+      ctx.font = '24px Anton'; ctx.fillText(`${lensFamily(config.body)} ${lenses.find(l => l.id === config.lens)?.name} / ${lightingLooks[studio.look].name.toUpperCase()}`, 90, 1385);
       ctx.textAlign = 'right'; ctx.fillStyle = '#bf4325'; ctx.fillText('DIRECTED BY YOU.', 1830, 1340);
       const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(new Error('Export failed')), 'image/png'));
       const url = URL.createObjectURL(blob);

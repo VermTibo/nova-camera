@@ -6,6 +6,7 @@ import {
   price,
   shareUrl,
   fromSearch,
+  changeBody,
 } from "./configuration";
 import { lenses, accessoryCatalog } from "../data/catalog";
 test("default system has the expected live price", () =>
@@ -13,7 +14,7 @@ test("default system has the expected live price", () =>
 test("complete configuration survives a shared URL", () => {
   const c = normalize({
     ...defaults,
-    body: "N1C",
+    body: "XT50",
     lens: "70-200",
     color: "#123abc",
     grip: "Walnut",
@@ -160,4 +161,67 @@ test("preset clicks stop automatic rotation and repeated or rapid choices retrig
   assert.equal(useCamera.getState().mode, "Product");
   assert.equal(useCamera.getState().viewTick, tick + 6);
   assert.equal(useStudio.getState().rotating, false);
+});
+
+test("reference cameras load their own lens, sensor, price and survive sharing", () => {
+  for (const [body, lens, total] of [["XT50", "16-50", 2189], ["D7500", "18-140", 1689]] as const) {
+    const c = normalize({ body });
+    assert.equal(c.body, body);
+    assert.equal(c.lens, lens);
+    assert.equal(c.sensor, "APS-C");
+    assert.equal(price(c), total);
+    assert.deepEqual(fromSearch(new URL(shareUrl(c, "https://camera.example/")).search), c);
+    assert.equal(normalize({ body, lens: "missing", sensor: "Full frame" }).lens, lens);
+  }
+});
+
+test("switching camera families pairs optics and preserves personal customization", () => {
+  const custom = normalize({ color: "#123abc", finish: "Satin", engraving: "MY CAMERA", accessories: { flash: true }, lens: "85" });
+  assert.equal(changeBody(custom, "N1").lens, "85", "selecting the current camera keeps a customized lens");
+  const fuji = changeBody(custom, "XT50");
+  assert.equal(fuji.lens, "16-50");
+  assert.equal(fuji.color, custom.color);
+  assert.equal(fuji.finish, custom.finish);
+  assert.equal(fuji.engraving, custom.engraving);
+  assert.deepEqual(fuji.accessories, custom.accessories);
+  const nikon = changeBody(fuji, "D7500");
+  assert.equal(nikon.lens, "18-140");
+  const sony = changeBody(nikon, "N1");
+  assert.equal(sony.lens, "24-70");
+  assert.equal(sony.sensor, "Full frame");
+});
+
+test("new camera selections persist through save/load and reset within their own family", async () => {
+  Object.defineProperty(globalThis, "window", { value: { location: { search: "" } }, configurable: true });
+  const memory = new Map<string, string>();
+  Object.defineProperty(globalThis, "localStorage", { value: { setItem: (k: string, v: string) => memory.set(k, v), getItem: (k: string) => memory.get(k) ?? null }, configurable: true });
+  const { useCamera } = await import("./cameraStore");
+  for (const body of ["XT50", "D7500"] as const) {
+    useCamera.getState().set("body", body);
+    useCamera.getState().set("color", "#123abc");
+    useCamera.getState().set("lens", "85");
+    useCamera.getState().save();
+    const saved = structuredClone(useCamera.getState().config);
+    useCamera.getState().reset();
+    assert.equal(useCamera.getState().config.body, body);
+    assert.equal(useCamera.getState().config.lens, body === "XT50" ? "16-50" : "18-140");
+    assert.equal(useCamera.getState().config.color, defaults.color);
+    useCamera.getState().set("body", "N1");
+    useCamera.getState().load();
+    assert.deepEqual(useCamera.getState().config, saved);
+  }
+});
+
+
+test("removed Sony bodies migrate to A7 III without losing customization", () => {
+  for (const body of ["N1R", "N1C"]) {
+    const old = { ...defaults, body, color: "#123abc", lens: "85", engraving: "MY CAMERA", accessories: { ...defaults.accessories, strap: true } };
+    const restored = fromSearch(`?config=${encodeURIComponent(JSON.stringify(old))}`)!;
+    assert.equal(restored.body, "N1");
+    assert.equal(restored.color, old.color);
+    assert.equal(restored.lens, old.lens);
+    assert.equal(restored.engraving, old.engraving);
+    assert.equal(restored.accessories.strap, true);
+    assert.ok(Number.isFinite(price(restored)));
+  }
 });

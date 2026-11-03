@@ -34,7 +34,8 @@ export function Block({
   return (
     <RoundedBox
       args={size}
-      radius={radius}
+      userData={{ shellSize: size }}
+      radius={Math.min(radius, ...size.map(dimension => dimension / 2 - 0.0001))}
       smoothness={5}
       {...props}
       castShadow
@@ -164,7 +165,7 @@ export function Label({
   }, [text, color, size, font, weight, anisotropy, width, height]);
   useEffect(() => () => texture.dispose(), [texture]);
   return (
-    <mesh position={position} rotation={rotation} scale={[-1, 1, 1]} geometry={geometry}>
+    <mesh name={`Label:${text}`} userData={{ decal: { width, height, radius, curveAxis } }} position={position} rotation={rotation} scale={[-1, 1, 1]} geometry={geometry}>
       <meshBasicMaterial
         map={texture}
         transparent
@@ -267,7 +268,7 @@ export function Barrel({
 }
 
 /** Printed lettering follows the front annulus instead of floating across the glass. */
-export function RimLabel({ text, radius, z }: { text: string; radius: number; z: number }) {
+export function RimLabel({ text, radius, z, top = false, color = "#d5d8d8" }: { text: string; radius: number; z: number; top?: boolean; color?: string }) {
   const anisotropy = useThree(s => s.gl.capabilities.getMaxAnisotropy());
   const texture = useMemo(() => {
     const canvas = document.createElement('canvas');
@@ -275,7 +276,7 @@ export function RimLabel({ text, radius, z }: { text: string; radius: number; z:
     const ctx = canvas.getContext('2d')!;
     const inkRadius = 960;
     ctx.font = '500 40px Arial, sans-serif';
-    ctx.fillStyle = '#d5d8d8';
+    ctx.fillStyle = color;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     const glyphs = Array.from(text);
@@ -285,8 +286,8 @@ export function RimLabel({ text, radius, z }: { text: string; radius: number; z:
     for (let i = 0; i < glyphs.length; i++) {
       const angle = (cursor + advances[i] / 2) / inkRadius;
       ctx.save();
-      ctx.translate(1024 + Math.sin(angle) * inkRadius, 1024 + Math.cos(angle) * inkRadius);
-      ctx.rotate(-angle);
+      ctx.translate(1024 + Math.sin(angle) * inkRadius, 1024 + (top ? -1 : 1) * Math.cos(angle) * inkRadius);
+      ctx.rotate(top ? angle : -angle);
       ctx.fillText(glyphs[i], 0, 0);
       ctx.restore();
       cursor += advances[i];
@@ -298,9 +299,9 @@ export function RimLabel({ text, radius, z }: { text: string; radius: number; z:
     map.repeat.x = -1;
     map.offset.x = 1;
     return map;
-  }, [text, anisotropy]);
+  }, [text, anisotropy, top, color]);
   useEffect(() => () => texture.dispose(), [texture]);
-  return <mesh position={[0, 0, z]}>
+  return <mesh name={`RimLabel:${text}`} position={[0, 0, z]}>
     <ringGeometry args={[radius * .89, radius * .98, 128]} />
     <meshBasicMaterial map={texture} transparent alphaTest={.02} depthWrite={false} toneMapped={false} polygonOffset polygonOffsetFactor={-1} />
   </mesh>;

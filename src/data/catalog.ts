@@ -4,8 +4,20 @@ export const colors = [
   { name: "Gunmetal", hex: "#002a32" },
   { name: "White", hex: "#ffffff" },
 ];
-export const bodyNames = { N1: "A7 III", N1R: "A7R", N1C: "A7C" };
+export const bodyNames = { N1: "A7 III", XT50: "X-T50", D7500: "D7500" };
+export type BodyId = keyof typeof bodyNames;
+export const bodyBrands: Record<BodyId, string> = { N1: "SONY", XT50: "FUJIFILM", D7500: "NIKON" };
+export const bodyPrices: Record<BodyId, number> = { N1: 3290, XT50: 1490, D7500: 1190 };
+export const defaultLenses: Record<BodyId, string> = { N1: "24-70", XT50: "16-50", D7500: "18-140" };
+export const lensFamily = (body: BodyId) => body === "XT50" ? "FUJINON XF" : body === "D7500" ? "AF-S NIKKOR" : "SONY FE";
+export const cameraChoices = [
+  { id: "N1", number: "01", brand: "Sony", name: "A7 III", category: "Modern versatility", description: "A sculpted grip and precise controls. Ready for your next perspective.", logo: "/logos/sony.svg", lens: "24–70mm F2.8", format: "Full frame", system: "Mirrorless", className: "sony" },
+  { id: "XT50", number: "02", brand: "Fujifilm", name: "X-T50", category: "Creative instinct", description: "Compact proportions and tactile dials. A classic with a personal touch.", logo: "/logos/fujifilm.svg", lens: "16–50mm F2.8–4.8", format: "APS-C", system: "Mirrorless", className: "fuji" },
+  { id: "D7500", number: "03", brand: "Nikon", name: "D7500", category: "Confident control", description: "A substantial grip and unmistakable character. Built to stand out.", logo: "/logos/nikon.svg", lens: "18–140mm F3.5–5.6", format: "APS-C", system: "DSLR", className: "nikon" },
+] as const;
 export const lenses = [
+  { id: "16-50", name: "16–50mm", type: "Zoom", aperture: "2.8–4.8", length: 1.25, radius: 0.84, price: 699 },
+  { id: "18-140", name: "18–140mm", type: "Zoom", aperture: "3.5–5.6", length: 2.05, radius: 0.89, price: 499 },
   {
     id: "24",
     name: "24mm",

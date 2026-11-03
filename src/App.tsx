@@ -22,7 +22,7 @@ import { useStudio } from "./state/studioStore";
 import ShotLab from "./components/ShotLab";
 import { useCamera, type Mode, type View } from "./state/cameraStore";
 import { shareUrl } from "./state/configuration";
-import { bodyNames } from "./data/catalog";
+import { bodyNames, bodyBrands } from "./data/catalog";
 const viewIcons = { Hero: Box, Front: Camera, Back: RectangleHorizontal, Top: PanelTop, Side: PanelLeft, Detail: ScanSearch };
 const Studio = lazy(() => import("./scene/Studio"));
 export default function App() {
@@ -66,6 +66,14 @@ export default function App() {
           NOVA
         </a>
         <div className="header-actions">
+        <button className="choose-camera-button" aria-label="Change camera" title="Change camera" onClick={() => {
+          useCamera.getState().select("Body");
+          requestAnimationFrame(() => {
+            const selected = document.querySelector<HTMLButtonElement>(".body-option[aria-pressed='true']");
+            selected?.scrollIntoView({ block: "nearest", behavior: "instant" });
+            selected?.focus({ preventScroll: true });
+          });
+        }}><Camera size={18} /><span>Change camera</span></button>
         <button ref={helpButton} className="help-button" aria-label="How to use NOVA" title="How to use NOVA" onClick={() => setWelcome(true)}><CircleHelp size={20} /></button>
         <button className="shot-lab-button" aria-label="Play Shot Lab photography game" onClick={() => setShotLab(true)}><Gamepad2 size={21} /><span className="game-button-copy"><strong>PLAY GAME</strong></span></button>
         <button className="share-button" aria-label="Share configuration" title="Share configuration" onClick={doShare}>
@@ -81,7 +89,7 @@ export default function App() {
         >
           <div className="stage-heading">
             <h1>
-              SONY <span>{bodyNames[config.body]}.</span>
+              {bodyBrands[config.body]} <span>{bodyNames[config.body]}.</span>
             </h1>
           </div>
           <div className="nova-backdrop" aria-hidden="true">NOVA</div>

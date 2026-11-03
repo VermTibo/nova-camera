@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { useStudio } from "./studioStore";
 import {
   defaults,
+  changeBody,
   fromSearch,
   normalize,
   type Configuration,
@@ -43,7 +44,9 @@ export const useCamera = create<State>((set, get) => ({
   ready: false,
   selected: null,
   set: (key, value) =>
-    set((s) => ({ config: normalize({ ...s.config, [key]: value }) })),
+    set((s) => ({ config: key === "body"
+      ? changeBody(s.config, value as Configuration["body"])
+      : normalize({ ...s.config, [key]: value }) })),
   toggle: (key) =>
     set((s) => {
       const accessories = {
@@ -80,7 +83,7 @@ export const useCamera = create<State>((set, get) => ({
   },
   reset: () => {
     set({
-      config: structuredClone(defaults),
+      config: normalize({ body: get().config.body }),
       mode: "Product",
       view: "Hero",
       viewTick: get().viewTick + 1,

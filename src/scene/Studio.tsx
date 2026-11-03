@@ -21,6 +21,7 @@ import {
 } from "@react-three/drei";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
+import { ReferenceBody } from "./ReferenceBodies";
 import { CameraBody } from "./CameraBody";
 import { Lens } from "./Lens";
 import { Diagnostics } from "./Diagnostics";
@@ -79,7 +80,7 @@ function Rig({ product }: { product: RefObject<THREE.Group | null> }) {
       direction.current.copy(camera.position).sub(controls.target).normalize();
     }
     moving.current = true;
-  }, [camera, config.lens, config.accessories, mode, size.width, size.height]);
+  }, [camera, config.body, config.lens, config.accessories, mode, size.width, size.height]);
 
   useFrame((_, dt) => {
     const orbit = controls;
@@ -153,7 +154,7 @@ function Product({ root }: { root: RefObject<THREE.Group | null> }) {
   });
   return (
     <group ref={root} position={[0, -0.2, 0]} rotation={[0, -0.13, 0]} scale={[-1, 1, 1]}>
-      <CameraBody explode={mode === "Exploded"} />
+      {config.body === "XT50" || config.body === "D7500" ? <ReferenceBody key={config.body} explode={mode === "Exploded"} /> : <CameraBody explode={mode === "Exploded"} />}
       <Lens explode={mode === "Exploded"} />
       <Accessories explode={mode === "Exploded"} />
       {mode === "Technical" && (

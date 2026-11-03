@@ -1,6 +1,6 @@
-import { accessoryCatalog, lenses, type Accessory } from "../data/catalog";
+import { accessoryCatalog, lenses, bodyPrices, defaultLenses, type BodyId, type Accessory } from "../data/catalog";
 export interface Configuration {
-  body: "N1" | "N1R" | "N1C";
+  body: BodyId;
   color: string;
   finish: "Satin" | "Matte" | "Brushed";
   grip: "Rubber" | "Leather" | "Walnut";
@@ -10,7 +10,7 @@ export interface Configuration {
   filter: "None" | "UV" | "ND";
   viewfinder: "Standard" | "Cinema" | "None";
   screen: "Flush" | "Articulated";
-  sensor: "Full frame" | "Monochrome";
+  sensor: "Full frame" | "APS-C" | "Monochrome";
   accent: string;
   mount: "N mount" | "PL adapter";
   engraving: string;
@@ -44,7 +44,7 @@ export const defaults: Configuration = {
   },
 };
 const choices = {
-  body: ["N1", "N1R", "N1C"],
+  body: Object.keys(bodyPrices),
   finish: ["Satin", "Matte", "Brushed"],
   grip: ["Rubber", "Leather", "Walnut"],
   lens: lenses.map((l) => l.id),
@@ -52,7 +52,7 @@ const choices = {
   filter: ["None", "UV", "ND"],
   viewfinder: ["Standard", "Cinema", "None"],
   screen: ["Flush", "Articulated"],
-  sensor: ["Full frame", "Monochrome"],
+  sensor: ["Full frame", "APS-C", "Monochrome"],
   mount: ["N mount", "PL adapter"],
 };
 export function normalize(value: unknown): Configuration {
@@ -62,6 +62,8 @@ export function normalize(value: unknown): Configuration {
   for (const [key, options] of Object.entries(choices))
     if (typeof v[key] === "string" && options.includes(v[key] as string))
       (c as unknown as Record<string, unknown>)[key] = v[key];
+  if (typeof v.lens !== "string" || !choices.lens.includes(v.lens)) c.lens = defaultLenses[c.body];
+  if (c.sensor !== "Monochrome") c.sensor = c.body === "XT50" || c.body === "D7500" ? "APS-C" : "Full frame";
   for (const key of ["color", "accent"] as const)
     if (typeof v[key] === "string" && /^#[0-9a-f]{6}$/i.test(v[key]))
       c[key] = v[key];
@@ -73,6 +75,12 @@ export function normalize(value: unknown): Configuration {
       c.accessories[key] =
         (v.accessories as Record<string, unknown>)[key] === true;
   return c;
+}
+/** A body change pairs the reference lens while preserving personal finishes and accessories. */
+export function changeBody(c: Configuration, body: BodyId): Configuration {
+  if (c.body === body) return c;
+  return normalize({ ...c, body, lens: defaultLenses[body],
+    sensor: body === "XT50" || body === "D7500" ? "APS-C" : "Full frame" });
 }
 export function fromSearch(search: string): Configuration | null {
   const p = new URLSearchParams(search);
@@ -108,7 +116,7 @@ export function shareUrl(c: Configuration, href: string): string {
 }
 export function price(c: Configuration) {
   return (
-    { N1: 3290, N1R: 4290, N1C: 4890 }[c.body] +
+    bodyPrices[c.body] +
     (lenses.find((l) => l.id === c.lens)?.price || 0) +
     Object.entries(c.accessories).reduce(
       (sum, [k, on]) => sum + (on ? accessoryCatalog[k as Accessory].price : 0),

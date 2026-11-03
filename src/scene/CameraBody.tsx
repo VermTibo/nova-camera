@@ -210,7 +210,7 @@ export function CameraBody({ explode }: { explode: boolean }) {
         <Label
           text="REC"
           color={ink}
-          position={[0.52, 1.009, 0.38]}
+          position={[0.74, 1.014, 0.30]}
           rotation={[-Math.PI / 2, 0, 0]}
           width={0.19}
           height={0.06}
@@ -288,13 +288,13 @@ export function CameraBody({ explode }: { explode: boolean }) {
         text={c.viewfinder === "None" ? "SONY" : "α"}
         font={c.viewfinder === "None" ? "Georgia, serif" : "Arial, sans-serif"}
         weight={700}
-        position={[-1.18, 0.745, 0.453]}
+        position={[-1.18, 0.78, 0.453]}
         width={c.viewfinder === "None" ? 0.64 : 0.30}
-        height={c.viewfinder === "None" ? 0.22 : 0.36}
+        height={c.viewfinder === "None" ? 0.22 : 0.28}
         color={ink}
       />
       <Label
-        text={c.body === "N1" ? "7 III" : c.body === "N1R" ? "7 R" : "7 C"}
+        text="7 III"
         color={ink}
         position={[-1.19, 0.43, 0.524]}
         width={0.38}
@@ -302,8 +302,8 @@ export function CameraBody({ explode }: { explode: boolean }) {
       />
       <Label
         text={c.engraving.toUpperCase()}
-        position={[-1.18, -0.40, 0.524]}
-        width={0.63}
+        position={[-1.25, -0.59, 0.524]}
+        width={0.45}
         height={0.095}
         color={ink}
       />
@@ -327,8 +327,9 @@ export function CameraBody({ explode }: { explode: boolean }) {
           color="#202323"
         />
         <group
+          name="RearDisplay"
           position={[-1.32, 0, -0.53]}
-          rotation={[0, c.screen === "Articulated" ? -0.8 : 0, 0]}
+          rotation={[0, c.screen === "Articulated" ? 0.8 : 0, 0]}
           onClick={(e) => {
             e.stopPropagation();
             select("View");
@@ -461,26 +462,6 @@ export function CameraBody({ explode }: { explode: boolean }) {
         width={1.1}
         height={0.08}
       />
-      {c.body === "N1C" &&
-        Array.from({ length: 9 }, (_, i) => (
-          <Block
-            key={i}
-            size={[0.22, 0.018, 0.045]}
-            radius={0.005}
-            position={[-1.66, -0.38 + i * 0.07, 0]}
-            rotation={[0, Math.PI / 2, 0]}
-            color="#060808"
-          />
-        ))}
-      {c.body === "N1R" && (
-        <Label
-          text="R"
-          position={[-1.2, -0.58, 0.521]}
-          width={0.13}
-          height={0.09}
-          color={c.accent}
-        />
-      )}
     </group>
   );
 }

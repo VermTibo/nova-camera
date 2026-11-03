@@ -259,3 +259,15 @@ summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .welcome-steps { gap: 14px; }
   .header-actions { gap: 4px; }
 }
+
+/* Model selection stays beside the viewer; there is no separate starting screen. */
+.choose-camera-button { display: flex; align-items: center; gap: 8px; font-size: 12px; padding: 12px; border-radius: 8px; }
+.choose-camera-button:hover { background: #e2eafa; color: var(--brand); }
+@media (max-width: 700px) {
+  .choose-camera-button span { display: none; }
+  .choose-camera-button { width: 40px; padding: 10px; }
+}
+
+.body-option-name { display: flex; align-items: center; gap: 16px; }
+.body-brand-logo { width: 64px; height: 22px; object-fit: contain; }
+.body-brand-logo.nikon { height: 30px; }

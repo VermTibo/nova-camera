@@ -10,6 +10,9 @@ import {
 } from "lucide-react";
 import {
   bodyNames,
+  cameraChoices,
+  bodyBrands,
+  bodyPrices,
   colors,
   lenses,
   accessoryCatalog,
@@ -152,15 +155,17 @@ export default function Configurator() {
             <fieldset className="field">
               <legend>CAMERA BODY</legend>
               <div className="body-options">
-                {(["N1", "N1R", "N1C"] as const).map((body) => (
+                {cameraChoices.map(({ id: body, logo, brand }) => (
                   <button
                     key={body}
                     className={`body-option ${c.body === body ? "selected" : ""}`}
+                    aria-label={`${bodyBrands[body]} ${bodyNames[body]}`}
                     onClick={() => set("body", body)}
                     aria-pressed={c.body === body}
                   >
-                    <span>
-                      <strong>SONY {bodyNames[body]}</strong>
+                    <span className="body-option-name">
+                      <img className={`body-brand-logo ${body === "D7500" ? "nikon" : ""}`} src={logo} alt={`${brand} logo`} />
+                      <strong>{bodyNames[body]}</strong>
 
                     </span>
                     <span>
@@ -275,7 +280,7 @@ export default function Configurator() {
             />
             <Choices
               label="SENSOR"
-              options={["Full frame", "Monochrome"]}
+              options={c.body === "XT50" || c.body === "D7500" ? ["APS-C", "Monochrome"] : ["Full frame", "Monochrome"]}
               value={c.sensor}
               onChange={(v) => set("sensor", v)}
             />
@@ -371,9 +376,9 @@ export default function Configurator() {
           <div className="summary">
             <div>
               <span>
-                SONY {bodyNames[c.body]} · {name}
+                {bodyBrands[c.body]} {bodyNames[c.body]} · {name}
               </span>
-              <span>{money({ N1: 3290, N1R: 4290, N1C: 4890 }[c.body])}</span>
+              <span>{money(bodyPrices[c.body])}</span>
             </div>
             <div>
               <span>
