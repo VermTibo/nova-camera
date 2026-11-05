@@ -21,9 +21,9 @@ npm run dev
 
 Open the local URL printed by Vite. The usual port is `5173`; Vite selects another port if it is occupied. No API keys, accounts, or environment variables are required.
 
-The app opens directly in the studio. Choose Sony A7 III, Fujifilm X-T50, or Nikon D7500 under **Body** in the configurator. **Change camera** in the header focuses the selected body option without leaving the viewer. Shared configuration URLs open their configured model directly. Locally bundled brand logos identify each body; sources are in [public/logos/SOURCES.md](public/logos/SOURCES.md).
+The app opens directly in the studio. Choose Sony A7 III, Fujifilm X-T50, or Nikon D7500 under **Body** in the configurator. Shared configuration URLs open their configured model directly. Locally bundled brand logos identify each body; sources are in [public/logos/SOURCES.md](public/logos/SOURCES.md).
 
-First-time visitors see a short welcome guide covering navigation, customization, Studio, and Shot Lab. Dismissing it is remembered on the device; the header help button reopens it anytime.
+Every page load shows a short welcome guide covering navigation, customization, Studio, and Shot Lab. Dismissing it closes it for the current visit; reloading the page shows it again. The header help button also reopens it anytime.
 
 ## Features
 

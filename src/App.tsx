@@ -34,19 +34,8 @@ const viewIcons = {
 const Studio = lazy(() => import("./scene/Studio"));
 export default function App() {
   const helpButton = useRef<HTMLButtonElement>(null);
-  const [welcome, setWelcome] = useState(() => {
-    try {
-      return localStorage.getItem("nova-welcome-v1") !== "seen";
-    } catch {
-      return true;
-    }
-  });
+  const [welcome, setWelcome] = useState(true);
   const closeWelcome = () => {
-    try {
-      localStorage.setItem("nova-welcome-v1", "seen");
-    } catch {
-      /* Guide remains usable without storage. */
-    }
     setWelcome(false);
     requestAnimationFrame(() => helpButton.current?.focus());
   };
@@ -89,27 +78,6 @@ export default function App() {
           NOVA
         </a>
         <div className="header-actions">
-          <button
-            className="choose-camera-button"
-            aria-label="Change camera"
-            title="Change camera"
-            onClick={() => {
-              useCamera.getState().select("Body");
-              requestAnimationFrame(() => {
-                const selected = document.querySelector<HTMLButtonElement>(
-                  ".body-option[aria-pressed='true']",
-                );
-                selected?.scrollIntoView({
-                  block: "nearest",
-                  behavior: "instant",
-                });
-                selected?.focus({ preventScroll: true });
-              });
-            }}
-          >
-            <Camera size={18} />
-            <span>Change camera</span>
-          </button>
           <button
             ref={helpButton}
             className="help-button"
