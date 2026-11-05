@@ -4,12 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useCamera } from "../state/cameraStore";
 import { Block, Cylinder, Knurl, Label, Ring, Screw, type V3 } from "./Parts";
-export const attachmentPoints = {
-  bottomMount: [0, -1.17, 0],
-  leftMount: [-1.88, 0, 0],
-  rightMount: [1.87, 0, 0],
-  topMount: [0, 1.5, 0],
-} satisfies Record<string, V3>;
+const sideHandleMount: V3 = [1.87, 0, 0];
 function Strap() {
   const curve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-1.67, 0.55, 0),
@@ -34,12 +29,21 @@ export function Accessories({ explode }: { explode: boolean }) {
   const group = useRef<THREE.Group>(null);
   const reference = c.body === "XT50" || c.body === "D7500";
   const nikon = c.body === "D7500";
-  const hotY = c.viewfinder === "None" ? 1.08 : nikon ? 1.76 : c.body === "XT50" ? 1.47 : c.viewfinder === "Cinema" ? 1.70 : 1.58;
-  const shoeX = reference ? -.22 : -.05;
-  const cageTop = Math.max(hotY + .12, 1.3);
+  const hotY =
+    c.viewfinder === "None"
+      ? 1.08
+      : nikon
+        ? 1.76
+        : c.body === "XT50"
+          ? 1.47
+          : c.viewfinder === "Cinema"
+            ? 1.7
+            : 1.58;
+  const shoeX = reference ? -0.22 : -0.05;
+  const cageTop = Math.max(hotY + 0.12, 1.3);
   const cageBottom = nikon ? -1.2 : -1.075;
-  const bottomOffset = nikon ? -.17 : 0;
-  const batteryY = a.cage ? cageBottom - .33 : -1.22 + bottomOffset;
+  const bottomOffset = nikon ? -0.17 : 0;
+  const batteryY = a.cage ? cageBottom - 0.33 : -1.22 + bottomOffset;
   useEffect(() => {
     if (
       group.current &&
@@ -49,7 +53,12 @@ export function Accessories({ explode }: { explode: boolean }) {
   }, [a]);
   useFrame((_, dt) => {
     if (group.current) {
-      group.current.position.z = motionDamp(group.current.position.z, explode ? -2.7 : 0, 6, dt);
+      group.current.position.z = motionDamp(
+        group.current.position.z,
+        explode ? -2.7 : 0,
+        6,
+        dt,
+      );
       group.current.position.y = motionDamp(
         group.current.position.y,
         explode ? 0.45 : 0,
@@ -72,7 +81,7 @@ export function Accessories({ explode }: { explode: boolean }) {
             {[-1.81, 1.81].map((x) => (
               <group key={x}>
                 <Block
-                  size={[0.13, cageTop - cageBottom, nikon ? 1.2 : .88]}
+                  size={[0.13, cageTop - cageBottom, nikon ? 1.2 : 0.88]}
                   radius={0.04}
                   position={[x, (cageTop + cageBottom) / 2, 0]}
                   color="#4b514d"
@@ -82,7 +91,7 @@ export function Accessories({ explode }: { explode: boolean }) {
                     key={i}
                     radius={0.041}
                     length={0.015}
-                    position={[x, -0.75 + i * 0.29, nikon ? .61 : .45]}
+                    position={[x, -0.75 + i * 0.29, nikon ? 0.61 : 0.45]}
                     color="#101511"
                   />
                 ))}
@@ -91,7 +100,7 @@ export function Accessories({ explode }: { explode: boolean }) {
             {[cageTop, cageBottom].map((y) => (
               <group key={y}>
                 <Block
-                  size={[3.74, 0.14, nikon ? 1.22 : .9]}
+                  size={[3.74, 0.14, nikon ? 1.22 : 0.9]}
                   radius={0.04}
                   position={[0, y, 0]}
                   color="#454b48"
@@ -110,15 +119,21 @@ export function Accessories({ explode }: { explode: boolean }) {
             ))}
             <Label
               text="NOVA / RIG"
-              position={[-1.1, cageTop, nikon ? .62 : .46]}
+              position={[-1.1, cageTop, nikon ? 0.62 : 0.46]}
               width={0.7}
               height={0.075}
             />
           </group>
         )}
         {a.topHandle && (
-          <group name="TopHandle" position={[0, cageTop + .09, 0]}>
-            {!a.cage && <Block size={[0.46, 0.42, 0.48]} radius={0.035} position={[-0.65, -0.19, 0]} />}
+          <group name="TopHandle" position={[0, cageTop + 0.09, 0]}>
+            {!a.cage && (
+              <Block
+                size={[0.46, 0.42, 0.48]}
+                radius={0.035}
+                position={[-0.65, -0.19, 0]}
+              />
+            )}
             <Block
               size={[0.31, 0.49, 0.33]}
               radius={0.055}
@@ -144,8 +159,14 @@ export function Accessories({ explode }: { explode: boolean }) {
           </group>
         )}
         {a.sideHandle && (
-          <group name="SideHandle" position={attachmentPoints.rightMount}>
-            {!a.cage && <Block size={[0.32, 0.48, 0.42]} radius={0.035} position={[-0.16, 0, 0]} />}
+          <group name="SideHandle" position={sideHandleMount}>
+            {!a.cage && (
+              <Block
+                size={[0.32, 0.48, 0.42]}
+                radius={0.035}
+                position={[-0.16, 0, 0]}
+              />
+            )}
             <Block size={[0.49, 0.15, 0.3]} radius={0.035} />
             <Block
               size={[0.4, 1.24, 0.55]}
@@ -159,11 +180,21 @@ export function Accessories({ explode }: { explode: boolean }) {
             <Screw position={[0.4, -0.52, 0.28]} />
           </group>
         )}
-        {a.flash && a.topHandle && !a.cage && <Block size={[1.4 - shoeX + .2, .06, .2]} radius={.015} position={[(1.4 + shoeX) / 2, hotY, -.13]} />}
+        {a.flash && a.topHandle && !a.cage && (
+          <Block
+            size={[1.4 - shoeX + 0.2, 0.06, 0.2]}
+            radius={0.015}
+            position={[(1.4 + shoeX) / 2, hotY, -0.13]}
+          />
+        )}
         {a.flash && (
           <group
             name="Flash"
-            position={[a.topHandle ? 1.4 : shoeX, a.cage ? cageTop + .09 : hotY, reference ? -.13 : -.03]}
+            position={[
+              a.topHandle ? 1.4 : shoeX,
+              a.cage ? cageTop + 0.09 : hotY,
+              reference ? -0.13 : -0.03,
+            ]}
           >
             <Block
               size={[0.28, 0.35, 0.31]}
@@ -209,7 +240,7 @@ export function Accessories({ explode }: { explode: boolean }) {
             name="Microphone"
             position={[
               a.flash || a.topHandle ? -1.25 : shoeX,
-              a.cage ? cageTop + .09 : hotY,
+              a.cage ? cageTop + 0.09 : hotY,
               0,
             ]}
           >
@@ -254,7 +285,11 @@ export function Accessories({ explode }: { explode: boolean }) {
         )}
         {a.monitor && (
           <group position={[-1.94, 0.6, -0.1]} name="Monitor">
-            <Block size={[.4, .12, .16]} radius={.025} position={[.15, 0, 0]} />
+            <Block
+              size={[0.4, 0.12, 0.16]}
+              radius={0.025}
+              position={[0.15, 0, 0]}
+            />
             <Block
               size={[0.11, 0.9, 0.12]}
               radius={0.025}
@@ -283,7 +318,10 @@ export function Accessories({ explode }: { explode: boolean }) {
         )}
       </group>
       {a.batteryGrip && (
-        <group name="BatteryGrip" position={[0, batteryY - (explode ? .64 : 0), 0]}>
+        <group
+          name="BatteryGrip"
+          position={[0, batteryY - (explode ? 0.64 : 0), 0]}
+        >
           <Block
             size={[3.01, 0.49, 0.9]}
             radius={0.13}
@@ -317,7 +355,18 @@ export function Accessories({ explode }: { explode: boolean }) {
         </group>
       )}
       {a.rails && (
-        <group position={[0, a.batteryGrip ? batteryY - .46 - (explode ? .64 : 0) : a.cage ? cageBottom - .18 : -1.19 + bottomOffset, 0.4]} name="Rails">
+        <group
+          position={[
+            0,
+            a.batteryGrip
+              ? batteryY - 0.46 - (explode ? 0.64 : 0)
+              : a.cage
+                ? cageBottom - 0.18
+                : -1.19 + bottomOffset,
+            0.4,
+          ]}
+          name="Rails"
+        >
           <Block size={[1.62, 0.2, 0.73]} radius={0.055} />
           {[-0.55, 0.55].map((x) => (
             <Cylinder

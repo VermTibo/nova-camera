@@ -7,24 +7,73 @@ import { lenses } from "../data/catalog";
 import { useCamera } from "../state/cameraStore";
 import { Block, Cylinder, Knurl, Label, Ring, Screw } from "./Parts";
 
-function FinderHousing({ color, height, roughness }: { color: string; height: number; roughness: number }) {
+function FinderHousing({
+  color,
+  height,
+  roughness,
+}: {
+  color: string;
+  height: number;
+  roughness: number;
+}) {
   const geometry = useMemo(() => {
     const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.Float32BufferAttribute([
-      -0.64, 0, 0.52, 0.64, 0, 0.52, 0.42, height, 0.28, -0.42, height, 0.28,
-      -0.64, 0, -0.43, 0.64, 0, -0.43, 0.42, height, -0.43, -0.42, height, -0.43,
-    ], 3));
-    g.setIndex([0, 1, 2, 0, 2, 3, 1, 5, 6, 1, 6, 2, 5, 4, 7, 5, 7, 6,
-      4, 0, 3, 4, 3, 7, 3, 2, 6, 3, 6, 7, 4, 5, 1, 4, 1, 0]);
+    g.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(
+        [
+          -0.64,
+          0,
+          0.52,
+          0.64,
+          0,
+          0.52,
+          0.42,
+          height,
+          0.28,
+          -0.42,
+          height,
+          0.28,
+          -0.64,
+          0,
+          -0.43,
+          0.64,
+          0,
+          -0.43,
+          0.42,
+          height,
+          -0.43,
+          -0.42,
+          height,
+          -0.43,
+        ],
+        3,
+      ),
+    );
+    g.setIndex([
+      0, 1, 2, 0, 2, 3, 1, 5, 6, 1, 6, 2, 5, 4, 7, 5, 7, 6, 4, 0, 3, 4, 3, 7, 3,
+      2, 6, 3, 6, 7, 4, 5, 1, 4, 1, 0,
+    ]);
     const flat = g.toNonIndexed();
     flat.computeVertexNormals();
     g.dispose();
     return flat;
   }, [height]);
   useEffect(() => () => geometry.dispose(), [geometry]);
-  return <mesh geometry={geometry} position={[-0.05, 0.91, 0]} castShadow receiveShadow>
-    <meshStandardMaterial color={color} roughness={roughness} metalness={0.28} />
-  </mesh>;
+  return (
+    <mesh
+      geometry={geometry}
+      position={[-0.05, 0.91, 0]}
+      castShadow
+      receiveShadow
+    >
+      <meshStandardMaterial
+        color={color}
+        roughness={roughness}
+        metalness={0.28}
+      />
+    </mesh>
+  );
 }
 
 export function CameraBody({ explode }: { explode: boolean }) {
@@ -115,7 +164,7 @@ export function CameraBody({ explode }: { explode: boolean }) {
         <Block
           size={[0.83, 1.82, 1.32]}
           radius={0.26}
-          position={[1.30, -0.03, 0.28]}
+          position={[1.3, -0.03, 0.28]}
           surface={
             c.grip === "Walnut"
               ? "walnut"
@@ -136,33 +185,33 @@ export function CameraBody({ explode }: { explode: boolean }) {
         <Block
           size={[0.7, 0.39, 1.0]}
           radius={0.14}
-          position={[1.30, 0.74, 0.42]}
+          position={[1.3, 0.74, 0.42]}
           color={c.color}
           roughness={finish}
           surface={c.finish === "Brushed" ? "brushed" : undefined}
         />
         <group position={[1.3, 0.51, 0.92]} rotation={[-Math.PI / 2, 0, 0]}>
-          <Cylinder radius={0.20} length={0.12} color="#252525" />
+          <Cylinder radius={0.2} length={0.12} color="#252525" />
           <Knurl radius={0.203} length={0.115} count={44} color="#393939" />
         </group>
         <Cylinder
           radius={0.13}
           length={0.035}
-          position={[1.30, 0.955, 0.67]}
+          position={[1.3, 0.955, 0.67]}
           rotation={[0, 0, 0]}
           color="#686e6c"
         />
         <Cylinder
           radius={0.095}
           length={0.046}
-          position={[1.30, 0.974, 0.67]}
+          position={[1.3, 0.974, 0.67]}
           rotation={[0, 0, 0]}
           color="#141617"
         />
         <Ring
           radius={0.123}
           tube={0.013}
-          position={[1.30, 0.981, 0.67]}
+          position={[1.3, 0.981, 0.67]}
           rotation={[-Math.PI / 2, 0, 0]}
           color={c.accent}
         />
@@ -189,7 +238,7 @@ export function CameraBody({ explode }: { explode: boolean }) {
               text={i ? "−  ·  +" : "M  A  S  P"}
               color={ink}
               position={[0, 0, 0.085]}
-              width={i ? 0.30 : 0.38}
+              width={i ? 0.3 : 0.38}
               height={0.075}
             />
             <Block
@@ -210,7 +259,7 @@ export function CameraBody({ explode }: { explode: boolean }) {
         <Label
           text="REC"
           color={ink}
-          position={[0.74, 1.014, 0.30]}
+          position={[0.74, 1.014, 0.3]}
           rotation={[-Math.PI / 2, 0, 0]}
           width={0.19}
           height={0.06}
@@ -230,14 +279,30 @@ export function CameraBody({ explode }: { explode: boolean }) {
               color={c.color}
               roughness={finish}
             />
-            <Label text="SONY" font="Georgia, serif" weight={700}
-              position={[-0.05, 1.18, 0.52 - 0.27 * 0.24 / (c.viewfinder === "Cinema" ? 0.68 : 0.56) + 0.003]}
-              rotation={[-Math.atan(0.24 / (c.viewfinder === "Cinema" ? 0.68 : 0.56)), 0, 0]}
-              width={0.88} height={0.26} color={ink} />
+            <Label
+              text="SONY"
+              font="Georgia, serif"
+              weight={700}
+              position={[
+                -0.05,
+                1.18,
+                0.52 -
+                  (0.27 * 0.24) / (c.viewfinder === "Cinema" ? 0.68 : 0.56) +
+                  0.003,
+              ]}
+              rotation={[
+                -Math.atan(0.24 / (c.viewfinder === "Cinema" ? 0.68 : 0.56)),
+                0,
+                0,
+              ]}
+              width={0.88}
+              height={0.26}
+              color={ink}
+            />
             <Block
               size={[0.83, 0.5, 0.3]}
               radius={0.09}
-              position={[-0.05, 1.20, -0.53]}
+              position={[-0.05, 1.2, -0.53]}
               color="#191d1c"
               metalness={0}
               roughness={0.8}
@@ -261,7 +326,7 @@ export function CameraBody({ explode }: { explode: boolean }) {
               ? 1.025
               : c.viewfinder === "Cinema"
                 ? 1.62
-                : 1.50,
+                : 1.5,
             -0.03,
           ]}
           color="#202425"
@@ -289,7 +354,7 @@ export function CameraBody({ explode }: { explode: boolean }) {
         font={c.viewfinder === "None" ? "Georgia, serif" : "Arial, sans-serif"}
         weight={700}
         position={[-1.18, 0.78, 0.453]}
-        width={c.viewfinder === "None" ? 0.64 : 0.30}
+        width={c.viewfinder === "None" ? 0.64 : 0.3}
         height={c.viewfinder === "None" ? 0.22 : 0.28}
         color={ink}
       />
@@ -357,7 +422,7 @@ export function CameraBody({ explode }: { explode: boolean }) {
             color="#b3cbbd"
           />
           <Label
-            text={`1/250     F${lenses.find(lens => lens.id === c.lens)?.aperture}     ISO 100`}
+            text={`1/250     F${lenses.find((lens) => lens.id === c.lens)?.aperture}     ISO 100`}
             position={[1, -0.36, -0.072]}
             rotation={[0, Math.PI, 0]}
             width={1.48}

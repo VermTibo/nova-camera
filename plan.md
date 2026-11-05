@@ -132,7 +132,6 @@ Use the local address printed by Vite; the port can change if another server is 
 - Exported posters are sharp, correctly framed, and readable.
 - Build and automated tests pass, visual verification is documented, and the hosted upload passes a final smoke test.
 
-
 ## Final upload preparation — 28 October 2026
 
 - Light palette applied across the configurator, all viewer modes, Studio, Shot Lab, dialogs, and PNG posters.

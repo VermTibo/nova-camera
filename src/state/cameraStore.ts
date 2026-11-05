@@ -18,10 +18,10 @@ interface State {
   section: Section;
   mode: Mode;
   view: View;
+  // Reapplying the same preset must still reset the orbit and zoom.
   viewTick: number;
   notice: string;
   ready: boolean;
-  selected: Section | null;
   set: <K extends keyof Configuration>(key: K, value: Configuration[K]) => void;
   toggle: (key: Accessory) => void;
   select: (section: Section) => void;
@@ -42,11 +42,13 @@ export const useCamera = create<State>((set, get) => ({
   viewTick: 0,
   notice: "",
   ready: false,
-  selected: null,
   set: (key, value) =>
-    set((s) => ({ config: key === "body"
-      ? changeBody(s.config, value as Configuration["body"])
-      : normalize({ ...s.config, [key]: value }) })),
+    set((s) => ({
+      config:
+        key === "body"
+          ? changeBody(s.config, value as Configuration["body"])
+          : normalize({ ...s.config, [key]: value }),
+    })),
   toggle: (key) =>
     set((s) => {
       const accessories = {
@@ -55,7 +57,7 @@ export const useCamera = create<State>((set, get) => ({
       };
       return { config: normalize({ ...s.config, accessories }) };
     }),
-  select: (section) => set({ section, selected: section }),
+  select: (section) => set({ section }),
   setMode: (mode) =>
     set((s) => ({
       mode,

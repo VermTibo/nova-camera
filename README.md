@@ -52,11 +52,11 @@ Surface finish and lens options expand on demand. The footer combines the total 
 
 Open **STUDIO** beside **More** to direct your product shot.
 
-| Look | Direction |
-| --- | --- |
-| Showroom | Soft, neutral light that reveals detail |
-| Golden Hour | Warm highlights and deeper shadows |
-| Blue Hour | Cool lighting with contrasting warm edges |
+| Look        | Direction                                 |
+| ----------- | ----------------------------------------- |
+| Showroom    | Soft, neutral light that reveals detail   |
+| Golden Hour | Warm highlights and deeper shadows        |
+| Blue Hour   | Cool lighting with contrasting warm edges |
 
 Adjust light intensity, start or pause the turntable, and set its speed. **CAPTURE POSTER** downloads a 1920 × 1440 PNG using the current angle, camera name, lens, and lighting look. Poster generation happens locally in the browser.
 
@@ -78,14 +78,16 @@ Incoming configuration data is validated before use. Resetting the current confi
 
 ## Commands
 
-| Command | Purpose |
-| --- | --- |
-| `npm ci` | Install dependencies from the lockfile |
-| `npm run dev` | Start the Vite development server |
-| `npm run build` | Run TypeScript checks and build into `dist/` |
-| `npm run preview` | Preview the production build locally |
-| `npm test` | Run the automated regression suite |
-| `npm run check:models` | Inspect the actual model geometry without a browser or GPU |
+| Command                | Purpose                                                        |
+| ---------------------- | -------------------------------------------------------------- |
+| `npm ci`               | Install dependencies from the lockfile                         |
+| `npm run dev`          | Start the Vite development server                              |
+| `npm run build`        | Run TypeScript checks and build into `dist/`                   |
+| `npm run preview`      | Preview the production build locally                           |
+| `npm run format`       | Format source, configuration, and documentation with Prettier  |
+| `npm run lint`         | Check JavaScript, TypeScript, and React code; fail on warnings |
+| `npm test`             | Run the automated regression suite                             |
+| `npm run check:models` | Inspect the actual model geometry without a browser or GPU     |
 
 To preview a production build:
 
@@ -96,20 +98,35 @@ npm run preview
 
 The built app is static and can be served from `dist/`. The current asset paths assume deployment at the domain root; hosting under a subdirectory requires adjusting the Vite base and root-relative asset URLs.
 
+### Formatting and linting
+
+Prettier uses its defaults in `.prettierrc.json`. Generated output, dependencies,
+the npm lockfile, and bundled public assets are excluded from formatting.
+Run `npx prettier --check .` to check formatting without rewriting files.
+
+`eslint.config.js` uses the recommended JavaScript and TypeScript rules, the core
+React Hooks rules (hook ordering and effect dependencies), and Vite Fast Refresh
+checks. Browser globals apply to application code; Node globals apply to tests,
+scripts, and configuration. `eslint-config-prettier` prevents formatting rules
+from conflicting with Prettier. Build output and coverage are ignored.
+
+The setup follows the [typescript-eslint quickstart](https://typescript-eslint.io/getting-started/)
+and [Prettier installation guide](https://prettier.io/docs/install).
+
 ## Design
 
 The interface uses locally bundled **Anton**, selected as a condensed alternative to the TT Burn Condensed reference. It is not the exact reference font.
 
-| Color | Hex | Role |
-| --- | --- | --- |
-| Pure Black | `#000000` | Backgrounds |
+| Color       | Hex       | Role                                 |
+| ----------- | --------- | ------------------------------------ |
+| Pure Black  | `#000000` | Backgrounds                          |
 | Cobalt Blue | `#3478F7` | Selected controls and studio accents |
-| Tangerine | `#EC562E` | Primary actions and highlights |
-| Petal Peach | `#F3D2C6` | Text and warm contrast |
+| Tangerine   | `#EC562E` | Primary actions and highlights       |
+| Petal Peach | `#F3D2C6` | Text and warm contrast               |
 
 Design references are stored in `public/`: `camera.jpg`, `font-modern.png`, `kleur-modern.png`, and `cut off error.png`. The interface palette is separate from selectable camera finishes; the catalog still includes older finish colors.
 
-The Anton license is included at [public/fonts/Anton-LICENSE.txt](public/fonts/Anton-LICENSE.txt). Other bundled fonts retain their accompanying license or source files.
+The Anton license is included at [public/fonts/Anton-LICENSE.txt](public/fonts/Anton-LICENSE.txt). Anton is the only bundled font.
 
 ## Technology and structure
 

@@ -35,7 +35,10 @@ export function Block({
     <RoundedBox
       args={size}
       userData={{ shellSize: size }}
-      radius={Math.min(radius, ...size.map(dimension => dimension / 2 - 0.0001))}
+      radius={Math.min(
+        radius,
+        ...size.map((dimension) => dimension / 2 - 0.0001),
+      )}
       smoothness={5}
       {...props}
       castShadow
@@ -139,22 +142,28 @@ export function Label({
   radius?: number;
   curveAxis?: "x" | "y";
 }) {
-  const anisotropy = useThree(s => s.gl.capabilities.getMaxAnisotropy());
-  const geometry = useMemo(() => labelGeometry(width, height, radius, curveAxis), [width, height, radius, curveAxis]);
+  const anisotropy = useThree((s) => s.gl.capabilities.getMaxAnisotropy());
+  const geometry = useMemo(
+    () => labelGeometry(width, height, radius, curveAxis),
+    [width, height, radius, curveAxis],
+  );
   useEffect(() => () => geometry.dispose(), [geometry]);
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
     canvas.width = 1024;
-    canvas.height = Math.max(64, Math.round(1024 * height / width));
+    canvas.height = Math.max(64, Math.round((1024 * height) / width));
     const ctx = canvas.getContext("2d")!;
     ctx.fillStyle = color;
     ctx.font = `${weight} ${size}px ${font}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     const metrics = ctx.measureText(text);
-    const ascent = metrics.actualBoundingBoxAscent || size * .75;
+    const ascent = metrics.actualBoundingBoxAscent || size * 0.75;
     const descent = metrics.actualBoundingBoxDescent || 0;
-    const fit = Math.min(canvas.width * .9 / Math.max(metrics.width, 1), canvas.height * .78 / Math.max(ascent + descent, 1));
+    const fit = Math.min(
+      (canvas.width * 0.9) / Math.max(metrics.width, 1),
+      (canvas.height * 0.78) / Math.max(ascent + descent, 1),
+    );
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.scale(fit, fit);
     ctx.fillText(text, 0, (ascent - descent) / 2);
@@ -165,7 +174,14 @@ export function Label({
   }, [text, color, size, font, weight, anisotropy, width, height]);
   useEffect(() => () => texture.dispose(), [texture]);
   return (
-    <mesh name={`Label:${text}`} userData={{ decal: { width, height, radius, curveAxis } }} position={position} rotation={rotation} scale={[-1, 1, 1]} geometry={geometry}>
+    <mesh
+      name={`Label:${text}`}
+      userData={{ decal: { width, height, radius, curveAxis } }}
+      position={position}
+      rotation={rotation}
+      scale={[-1, 1, 1]}
+      geometry={geometry}
+    >
       <meshBasicMaterial
         map={texture}
         transparent
@@ -268,25 +284,40 @@ export function Barrel({
 }
 
 /** Printed lettering follows the front annulus instead of floating across the glass. */
-export function RimLabel({ text, radius, z, top = false, color = "#d5d8d8" }: { text: string; radius: number; z: number; top?: boolean; color?: string }) {
-  const anisotropy = useThree(s => s.gl.capabilities.getMaxAnisotropy());
+export function RimLabel({
+  text,
+  radius,
+  z,
+  top = false,
+  color = "#d5d8d8",
+}: {
+  text: string;
+  radius: number;
+  z: number;
+  top?: boolean;
+  color?: string;
+}) {
+  const anisotropy = useThree((s) => s.gl.capabilities.getMaxAnisotropy());
   const texture = useMemo(() => {
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = canvas.height = 2048;
-    const ctx = canvas.getContext('2d')!;
+    const ctx = canvas.getContext("2d")!;
     const inkRadius = 960;
-    ctx.font = '500 40px Arial, sans-serif';
+    ctx.font = "500 40px Arial, sans-serif";
     ctx.fillStyle = color;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     const glyphs = Array.from(text);
-    const advances = glyphs.map(char => ctx.measureText(char).width + 5);
+    const advances = glyphs.map((char) => ctx.measureText(char).width + 5);
     const length = advances.reduce((sum, value) => sum + value, 0);
     let cursor = -length / 2;
     for (let i = 0; i < glyphs.length; i++) {
       const angle = (cursor + advances[i] / 2) / inkRadius;
       ctx.save();
-      ctx.translate(1024 + Math.sin(angle) * inkRadius, 1024 + (top ? -1 : 1) * Math.cos(angle) * inkRadius);
+      ctx.translate(
+        1024 + Math.sin(angle) * inkRadius,
+        1024 + (top ? -1 : 1) * Math.cos(angle) * inkRadius,
+      );
       ctx.rotate(top ? angle : -angle);
       ctx.fillText(glyphs[i], 0, 0);
       ctx.restore();
@@ -301,8 +332,18 @@ export function RimLabel({ text, radius, z, top = false, color = "#d5d8d8" }: { 
     return map;
   }, [text, anisotropy, top, color]);
   useEffect(() => () => texture.dispose(), [texture]);
-  return <mesh name={`RimLabel:${text}`} position={[0, 0, z]}>
-    <ringGeometry args={[radius * .89, radius * .98, 128]} />
-    <meshBasicMaterial map={texture} transparent alphaTest={.02} depthWrite={false} toneMapped={false} polygonOffset polygonOffsetFactor={-1} />
-  </mesh>;
+  return (
+    <mesh name={`RimLabel:${text}`} position={[0, 0, z]}>
+      <ringGeometry args={[radius * 0.89, radius * 0.98, 128]} />
+      <meshBasicMaterial
+        map={texture}
+        transparent
+        alphaTest={0.02}
+        depthWrite={false}
+        toneMapped={false}
+        polygonOffset
+        polygonOffsetFactor={-1}
+      />
+    </mesh>
+  );
 }

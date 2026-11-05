@@ -53,12 +53,18 @@ test("friendly URL aliases load a real optical system", () => {
   assert.equal(c.accessories.flash, false);
 });
 test("handles remain independent of the cage, price and shared configuration", () => {
-  for (const part of ["sideHandle", "topHandle"])
-  {
+  for (const part of ["sideHandle", "topHandle"]) {
     const c = normalize({ accessories: { [part]: true } });
     assert.equal(c.accessories.cage, false);
-    assert.equal(price(c), price(defaults) + accessoryCatalog[part as keyof typeof accessoryCatalog].price);
-    assert.deepEqual(fromSearch(new URL(shareUrl(c, "https://camera.example")).search), c);
+    assert.equal(
+      price(c),
+      price(defaults) +
+        accessoryCatalog[part as keyof typeof accessoryCatalog].price,
+    );
+    assert.deepEqual(
+      fromSearch(new URL(shareUrl(c, "https://camera.example")).search),
+      c,
+    );
   }
 });
 test("each lens changes total by its actual catalog price", () => {
@@ -127,7 +133,8 @@ test("store save, reset and load preserve a complete system in device storage", 
 
 test("reset camera restores the hero view and stops rotation without changing customization", async () => {
   Object.defineProperty(globalThis, "window", {
-    value: { location: { search: "" } }, configurable: true,
+    value: { location: { search: "" } },
+    configurable: true,
   });
   const { useCamera } = await import("./cameraStore");
   const { useStudio } = await import("./studioStore");
@@ -143,19 +150,31 @@ test("reset camera restores the hero view and stops rotation without changing cu
   assert.equal(useCamera.getState().viewTick, tick + 1);
   assert.deepEqual(useCamera.getState().config, config);
   useCamera.getState().resetView();
-  assert.equal(useCamera.getState().viewTick, tick + 2, "reset works again after manually zooming the hero view");
+  assert.equal(
+    useCamera.getState().viewTick,
+    tick + 2,
+    "reset works again after manually zooming the hero view",
+  );
 });
 
 test("preset clicks stop automatic rotation and repeated or rapid choices retrigger the transition", async () => {
   Object.defineProperty(globalThis, "window", {
-    value: { location: { search: "" } }, configurable: true,
+    value: { location: { search: "" } },
+    configurable: true,
   });
   const { useCamera } = await import("./cameraStore");
   const { useStudio } = await import("./studioStore");
   useCamera.getState().setMode("Cinematic");
   useStudio.getState().setRotating(true);
   const tick = useCamera.getState().viewTick;
-  for (const view of ["Front", "Back", "Back", "Top", "Detail", "Hero"] as const)
+  for (const view of [
+    "Front",
+    "Back",
+    "Back",
+    "Top",
+    "Detail",
+    "Hero",
+  ] as const)
     useCamera.getState().setView(view);
   assert.equal(useCamera.getState().view, "Hero");
   assert.equal(useCamera.getState().mode, "Product");
@@ -164,20 +183,39 @@ test("preset clicks stop automatic rotation and repeated or rapid choices retrig
 });
 
 test("reference cameras load their own lens, sensor, price and survive sharing", () => {
-  for (const [body, lens, total] of [["XT50", "16-50", 2189], ["D7500", "18-140", 1689]] as const) {
+  for (const [body, lens, total] of [
+    ["XT50", "16-50", 2189],
+    ["D7500", "18-140", 1689],
+  ] as const) {
     const c = normalize({ body });
     assert.equal(c.body, body);
     assert.equal(c.lens, lens);
     assert.equal(c.sensor, "APS-C");
     assert.equal(price(c), total);
-    assert.deepEqual(fromSearch(new URL(shareUrl(c, "https://camera.example/")).search), c);
-    assert.equal(normalize({ body, lens: "missing", sensor: "Full frame" }).lens, lens);
+    assert.deepEqual(
+      fromSearch(new URL(shareUrl(c, "https://camera.example/")).search),
+      c,
+    );
+    assert.equal(
+      normalize({ body, lens: "missing", sensor: "Full frame" }).lens,
+      lens,
+    );
   }
 });
 
 test("switching camera families pairs optics and preserves personal customization", () => {
-  const custom = normalize({ color: "#123abc", finish: "Satin", engraving: "MY CAMERA", accessories: { flash: true }, lens: "85" });
-  assert.equal(changeBody(custom, "N1").lens, "85", "selecting the current camera keeps a customized lens");
+  const custom = normalize({
+    color: "#123abc",
+    finish: "Satin",
+    engraving: "MY CAMERA",
+    accessories: { flash: true },
+    lens: "85",
+  });
+  assert.equal(
+    changeBody(custom, "N1").lens,
+    "85",
+    "selecting the current camera keeps a customized lens",
+  );
   const fuji = changeBody(custom, "XT50");
   assert.equal(fuji.lens, "16-50");
   assert.equal(fuji.color, custom.color);
@@ -192,9 +230,18 @@ test("switching camera families pairs optics and preserves personal customizatio
 });
 
 test("new camera selections persist through save/load and reset within their own family", async () => {
-  Object.defineProperty(globalThis, "window", { value: { location: { search: "" } }, configurable: true });
+  Object.defineProperty(globalThis, "window", {
+    value: { location: { search: "" } },
+    configurable: true,
+  });
   const memory = new Map<string, string>();
-  Object.defineProperty(globalThis, "localStorage", { value: { setItem: (k: string, v: string) => memory.set(k, v), getItem: (k: string) => memory.get(k) ?? null }, configurable: true });
+  Object.defineProperty(globalThis, "localStorage", {
+    value: {
+      setItem: (k: string, v: string) => memory.set(k, v),
+      getItem: (k: string) => memory.get(k) ?? null,
+    },
+    configurable: true,
+  });
   const { useCamera } = await import("./cameraStore");
   for (const body of ["XT50", "D7500"] as const) {
     useCamera.getState().set("body", body);
@@ -204,7 +251,10 @@ test("new camera selections persist through save/load and reset within their own
     const saved = structuredClone(useCamera.getState().config);
     useCamera.getState().reset();
     assert.equal(useCamera.getState().config.body, body);
-    assert.equal(useCamera.getState().config.lens, body === "XT50" ? "16-50" : "18-140");
+    assert.equal(
+      useCamera.getState().config.lens,
+      body === "XT50" ? "16-50" : "18-140",
+    );
     assert.equal(useCamera.getState().config.color, defaults.color);
     useCamera.getState().set("body", "N1");
     useCamera.getState().load();
@@ -212,11 +262,19 @@ test("new camera selections persist through save/load and reset within their own
   }
 });
 
-
 test("removed Sony bodies migrate to A7 III without losing customization", () => {
   for (const body of ["N1R", "N1C"]) {
-    const old = { ...defaults, body, color: "#123abc", lens: "85", engraving: "MY CAMERA", accessories: { ...defaults.accessories, strap: true } };
-    const restored = fromSearch(`?config=${encodeURIComponent(JSON.stringify(old))}`)!;
+    const old = {
+      ...defaults,
+      body,
+      color: "#123abc",
+      lens: "85",
+      engraving: "MY CAMERA",
+      accessories: { ...defaults.accessories, strap: true },
+    };
+    const restored = fromSearch(
+      `?config=${encodeURIComponent(JSON.stringify(old))}`,
+    )!;
     assert.equal(restored.body, "N1");
     assert.equal(restored.color, old.color);
     assert.equal(restored.lens, old.lens);

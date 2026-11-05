@@ -1,4 +1,11 @@
-import { accessoryCatalog, lenses, bodyPrices, defaultLenses, type BodyId, type Accessory } from "../data/catalog";
+import {
+  accessoryCatalog,
+  lenses,
+  bodyPrices,
+  defaultLenses,
+  type BodyId,
+  type Accessory,
+} from "../data/catalog";
 export interface Configuration {
   body: BodyId;
   color: string;
@@ -62,8 +69,10 @@ export function normalize(value: unknown): Configuration {
   for (const [key, options] of Object.entries(choices))
     if (typeof v[key] === "string" && options.includes(v[key] as string))
       (c as unknown as Record<string, unknown>)[key] = v[key];
-  if (typeof v.lens !== "string" || !choices.lens.includes(v.lens)) c.lens = defaultLenses[c.body];
-  if (c.sensor !== "Monochrome") c.sensor = c.body === "XT50" || c.body === "D7500" ? "APS-C" : "Full frame";
+  if (typeof v.lens !== "string" || !choices.lens.includes(v.lens))
+    c.lens = defaultLenses[c.body];
+  if (c.sensor !== "Monochrome")
+    c.sensor = c.body === "XT50" || c.body === "D7500" ? "APS-C" : "Full frame";
   for (const key of ["color", "accent"] as const)
     if (typeof v[key] === "string" && /^#[0-9a-f]{6}$/i.test(v[key]))
       c[key] = v[key];
@@ -79,8 +88,12 @@ export function normalize(value: unknown): Configuration {
 /** A body change pairs the reference lens while preserving personal finishes and accessories. */
 export function changeBody(c: Configuration, body: BodyId): Configuration {
   if (c.body === body) return c;
-  return normalize({ ...c, body, lens: defaultLenses[body],
-    sensor: body === "XT50" || body === "D7500" ? "APS-C" : "Full frame" });
+  return normalize({
+    ...c,
+    body,
+    lens: defaultLenses[body],
+    sensor: body === "XT50" || body === "D7500" ? "APS-C" : "Full frame",
+  });
 }
 export function fromSearch(search: string): Configuration | null {
   const p = new URLSearchParams(search);
@@ -92,6 +105,7 @@ export function fromSearch(search: string): Configuration | null {
       return null;
     }
   }
+  // Older links store paint in `body`; current links use the JSON `config` field.
   if (!p.has("body") && !p.has("lens")) return null;
   const colorNames: Record<string, string> = {
     titanium: "#96978d",

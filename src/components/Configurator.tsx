@@ -1,13 +1,6 @@
 import { Modal } from "./Modal";
 import { useState } from "react";
-import {
-  ArrowUpRight,
-  Check,
-  Plus,
-  Minus,
-  RotateCcw,
-  X,
-} from "lucide-react";
+import { ArrowUpRight, Check, Plus, Minus, RotateCcw, X } from "lucide-react";
 import {
   bodyNames,
   cameraChoices,
@@ -116,14 +109,15 @@ export default function Configurator() {
       />
     ));
   return (
-    <aside
-      className="configurator"
-      aria-label="Camera configurator"
-    >
+    <aside className="configurator" aria-label="Camera configurator">
       <div className="config-title">
         <h2>Customize</h2>
       </div>
-      <nav className="category-tabs" role="tablist" aria-label="Configuration categories">
+      <nav
+        className="category-tabs"
+        role="tablist"
+        aria-label="Configuration categories"
+      >
         {sections.map((s) => (
           <button
             key={s}
@@ -136,9 +130,16 @@ export default function Configurator() {
             onClick={() => select(s)}
             onKeyDown={(event) => {
               const index = sections.indexOf(s);
-              const next = event.key === "ArrowRight" ? (index + 1) % sections.length
-                : event.key === "ArrowLeft" ? (index + sections.length - 1) % sections.length
-                  : event.key === "Home" ? 0 : event.key === "End" ? sections.length - 1 : -1;
+              const next =
+                event.key === "ArrowRight"
+                  ? (index + 1) % sections.length
+                  : event.key === "ArrowLeft"
+                    ? (index + sections.length - 1) % sections.length
+                    : event.key === "Home"
+                      ? 0
+                      : event.key === "End"
+                        ? sections.length - 1
+                        : -1;
               if (next < 0) return;
               event.preventDefault();
               select(sections[next]);
@@ -149,7 +150,14 @@ export default function Configurator() {
           </button>
         ))}
       </nav>
-      <div className="config-scroll" id="configuration-panel" role="tabpanel" aria-labelledby={`tab-${section}`} tabIndex={0} key={section}>
+      <div
+        className="config-scroll"
+        id="configuration-panel"
+        role="tabpanel"
+        aria-labelledby={`tab-${section}`}
+        tabIndex={0}
+        key={section}
+      >
         {section === "Body" && (
           <>
             <fieldset className="field">
@@ -164,9 +172,12 @@ export default function Configurator() {
                     aria-pressed={c.body === body}
                   >
                     <span className="body-option-name">
-                      <img className={`body-brand-logo ${body === "D7500" ? "nikon" : ""}`} src={logo} alt={`${brand} logo`} />
+                      <img
+                        className={`body-brand-logo ${body === "D7500" ? "nikon" : ""}`}
+                        src={logo}
+                        alt={`${brand} logo`}
+                      />
                       <strong>{bodyNames[body]}</strong>
-
                     </span>
                     <span>
                       {c.body === body ? (
@@ -210,16 +221,19 @@ export default function Configurator() {
             </fieldset>
             <details className="advanced-options">
               <summary>Surface finish</summary>
-              <Choices label="FINISH" options={["Satin", "Matte", "Brushed"]} value={c.finish} onChange={v => set("finish", v)} />
+              <Choices
+                label="FINISH"
+                options={["Satin", "Matte", "Brushed"]}
+                value={c.finish}
+                onChange={(v) => set("finish", v)}
+              />
             </details>
           </>
         )}
         {section === "Lens" && (
           <>
             <fieldset className="field">
-              <legend>
-                LENS
-              </legend>
+              <legend>LENS</legend>
               <div className="lens-options">
                 {lenses.map((l) => (
                   <button
@@ -240,24 +254,24 @@ export default function Configurator() {
             </fieldset>
             <details className="advanced-options">
               <summary>Lens options</summary>
-            <Choices
-              label="LENS FINISH"
-              options={["Obsidian", "Silver"]}
-              value={c.lensFinish}
-              onChange={(v) => set("lensFinish", v)}
-            />
-            <Toggle
-              title="Lens hood"
-              amount={90}
-              on={c.hood}
-              onClick={() => set("hood", !c.hood)}
-            />
-            <Choices
-              label="OPTICAL FILTER"
-              options={["None", "UV", "ND"]}
-              value={c.filter}
-              onChange={(v) => set("filter", v)}
-            />
+              <Choices
+                label="LENS FINISH"
+                options={["Obsidian", "Silver"]}
+                value={c.lensFinish}
+                onChange={(v) => set("lensFinish", v)}
+              />
+              <Toggle
+                title="Lens hood"
+                amount={90}
+                on={c.hood}
+                onClick={() => set("hood", !c.hood)}
+              />
+              <Choices
+                label="OPTICAL FILTER"
+                options={["None", "UV", "ND"]}
+                value={c.filter}
+                onChange={(v) => set("filter", v)}
+              />
             </details>
           </>
         )}
@@ -280,7 +294,11 @@ export default function Configurator() {
             />
             <Choices
               label="SENSOR"
-              options={c.body === "XT50" || c.body === "D7500" ? ["APS-C", "Monochrome"] : ["Full frame", "Monochrome"]}
+              options={
+                c.body === "XT50" || c.body === "D7500"
+                  ? ["APS-C", "Monochrome"]
+                  : ["Full frame", "Monochrome"]
+              }
               value={c.sensor}
               onChange={(v) => set("sensor", v)}
             />
@@ -299,14 +317,7 @@ export default function Configurator() {
         )}
         {section === "Accessories" && (
           <>
-            {accessories([
-              "cage",
-              "flash",
-              "microphone",
-              "monitor",
-              "rails",
-            ])}
-
+            {accessories(["cage", "flash", "microphone", "monitor", "rails"])}
           </>
         )}
         {section === "Details" && (
@@ -314,20 +325,18 @@ export default function Configurator() {
             <fieldset className="field">
               <legend>CONTROL & RING ACCENT</legend>
               <div className="swatches">
-                {["#3478f7", "#ec562e", "#f3d2c6", "#000000"].map(
-                  (hex) => (
-                    <button
-                      key={hex}
-                      className={`swatch ${hex === c.accent ? "chosen" : ""}`}
-                      style={{ "--swatch": hex } as React.CSSProperties}
-                      aria-label={`Accent ${hex}`}
-                      aria-pressed={hex === c.accent}
-                      onClick={() => set("accent", hex)}
-                    >
-                      {hex === c.accent && <Check size={16} />}
-                    </button>
-                  ),
-                )}
+                {["#3478f7", "#ec562e", "#f3d2c6", "#000000"].map((hex) => (
+                  <button
+                    key={hex}
+                    className={`swatch ${hex === c.accent ? "chosen" : ""}`}
+                    style={{ "--swatch": hex } as React.CSSProperties}
+                    aria-label={`Accent ${hex}`}
+                    aria-pressed={hex === c.accent}
+                    onClick={() => set("accent", hex)}
+                  >
+                    {hex === c.accent && <Check size={16} />}
+                  </button>
+                ))}
               </div>
             </fieldset>
             <Choices
@@ -350,15 +359,17 @@ export default function Configurator() {
             </label>
             <details className="advanced-options">
               <summary>Saved configuration</summary>
-            <div className="storage-actions">
-              <button onClick={save}>
-                Save configuration <Plus size={15} />
-              </button>
-              <button onClick={load}>
-                Load saved configuration <ArrowUpRight size={15} />
-              </button>
-              <button onClick={() => setConfirm(true)}>Reset configuration <RotateCcw size={15} /></button>
-            </div>
+              <div className="storage-actions">
+                <button onClick={save}>
+                  Save configuration <Plus size={15} />
+                </button>
+                <button onClick={load}>
+                  Load saved configuration <ArrowUpRight size={15} />
+                </button>
+                <button onClick={() => setConfirm(true)}>
+                  Reset configuration <RotateCcw size={15} />
+                </button>
+              </div>
             </details>
           </>
         )}
@@ -369,7 +380,8 @@ export default function Configurator() {
           aria-expanded={summary}
           onClick={() => setSummary(!summary)}
         >
-          <span>Summary</span><strong>{money(price(c))}</strong>
+          <span>Summary</span>
+          <strong>{money(price(c))}</strong>
           {summary ? <Minus size={15} /> : <Plus size={15} />}
         </button>
         {summary && (
